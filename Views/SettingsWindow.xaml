@@ -116,6 +116,33 @@
             </Setter>
         </Style>
 
+        <!-- Step Increment / Decrement Button Style -->
+        <Style x:Key="SmallStepButton" TargetType="Button">
+            <Setter Property="Width" Value="24" />
+            <Setter Property="Height" Value="24" />
+            <Setter Property="Background" Value="#222732" />
+            <Setter Property="Foreground" Value="#E2E8F0" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="b" Background="{TemplateBinding Background}" CornerRadius="4" BorderBrush="#353E4E" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-2,0,0"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="b" Property="Background" Value="#2D3545" />
+                                <Setter TargetName="b" Property="BorderBrush" Value="#00FF66" />
+                                <Setter Property="Foreground" Value="#00FF66" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!-- Dark ComboBox ToggleButton Template -->
         <ControlTemplate x:Key="DarkComboBoxToggleButton" TargetType="ToggleButton">
             <Grid>
@@ -368,57 +395,73 @@
                             <!-- Arm Size (Length) -->
                             <Grid Margin="0,4">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="140" />
+                                    <ColumnDefinition Width="130" />
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="45" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="42" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="Length / Radius (px)" Style="{StaticResource SettingLabel}"/>
-                                <Slider x:Name="SliderSize" Grid.Column="1" Minimum="2" Maximum="50" Value="10" ValueChanged="Slider_ValueChanged" />
-                                <TextBlock x:Name="LblSize" Grid.Column="2" Text="{Binding Value, ElementName=SliderSize, StringFormat={}{0:0}}" Style="{StaticResource ValueLabel}"/>
+                                <Button Grid.Column="1" Style="{StaticResource SmallStepButton}" Content="-" Click="BtnSizeMinus_Click" Margin="0,0,6,0" ToolTip="Kurangi 1 px"/>
+                                <Slider x:Name="SliderSize" Grid.Column="2" Minimum="2" Maximum="50" Value="10" ValueChanged="Slider_ValueChanged" />
+                                <Button Grid.Column="3" Style="{StaticResource SmallStepButton}" Content="+" Click="BtnSizePlus_Click" Margin="6,0,6,0" ToolTip="Tambah 1 px"/>
+                                <TextBlock x:Name="LblSize" Grid.Column="4" Text="{Binding Value, ElementName=SliderSize, StringFormat={}{0:0}}" Style="{StaticResource ValueLabel}"/>
                             </Grid>
 
                             <!-- Thickness -->
                             <Grid Margin="0,4">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="140" />
+                                    <ColumnDefinition Width="130" />
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="45" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="42" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="Thickness (px)" Style="{StaticResource SettingLabel}"/>
-                                <Slider x:Name="SliderThickness" Grid.Column="1" Minimum="1" Maximum="12" Value="2" ValueChanged="Slider_ValueChanged" />
-                                <TextBlock x:Name="LblThickness" Grid.Column="2" Text="{Binding Value, ElementName=SliderThickness, StringFormat={}{0:0}}" Style="{StaticResource ValueLabel}"/>
+                                <Button Grid.Column="1" Style="{StaticResource SmallStepButton}" Content="-" Click="BtnThicknessMinus_Click" Margin="0,0,6,0" ToolTip="Kurangi 1 px"/>
+                                <Slider x:Name="SliderThickness" Grid.Column="2" Minimum="1" Maximum="12" Value="2" ValueChanged="Slider_ValueChanged" />
+                                <Button Grid.Column="3" Style="{StaticResource SmallStepButton}" Content="+" Click="BtnThicknessPlus_Click" Margin="6,0,6,0" ToolTip="Tambah 1 px"/>
+                                <TextBlock x:Name="LblThickness" Grid.Column="4" Text="{Binding Value, ElementName=SliderThickness, StringFormat={}{0:0}}" Style="{StaticResource ValueLabel}"/>
                             </Grid>
 
                             <!-- Center Gap -->
                             <Grid Margin="0,4">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="140" />
+                                    <ColumnDefinition Width="130" />
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="45" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="42" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="Center Gap (px)" Style="{StaticResource SettingLabel}"/>
-                                <Slider x:Name="SliderGap" Grid.Column="1" Minimum="0" Maximum="30" Value="5" ValueChanged="Slider_ValueChanged" />
-                                <TextBlock x:Name="LblGap" Grid.Column="2" Text="{Binding Value, ElementName=SliderGap, StringFormat={}{0:0}}" Style="{StaticResource ValueLabel}"/>
+                                <Button Grid.Column="1" Style="{StaticResource SmallStepButton}" Content="-" Click="BtnGapMinus_Click" Margin="0,0,6,0" ToolTip="Kurangi 1 px"/>
+                                <Slider x:Name="SliderGap" Grid.Column="2" Minimum="0" Maximum="30" Value="5" ValueChanged="Slider_ValueChanged" />
+                                <Button Grid.Column="3" Style="{StaticResource SmallStepButton}" Content="+" Click="BtnGapPlus_Click" Margin="6,0,6,0" ToolTip="Tambah 1 px"/>
+                                <TextBlock x:Name="LblGap" Grid.Column="4" Text="{Binding Value, ElementName=SliderGap, StringFormat={}{0:0}}" Style="{StaticResource ValueLabel}"/>
                             </Grid>
 
                             <!-- Dot Size -->
                             <Grid Margin="0,4">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="140" />
+                                    <ColumnDefinition Width="130" />
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="45" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="42" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="Center Dot Size (px)" Style="{StaticResource SettingLabel}"/>
-                                <Slider x:Name="SliderDotSize" Grid.Column="1" Minimum="1" Maximum="16" Value="3" ValueChanged="Slider_ValueChanged" />
-                                <TextBlock x:Name="LblDotSize" Grid.Column="2" Text="{Binding Value, ElementName=SliderDotSize, StringFormat={}{0:0}}" Style="{StaticResource ValueLabel}"/>
+                                <Button Grid.Column="1" Style="{StaticResource SmallStepButton}" Content="-" Click="BtnDotSizeMinus_Click" Margin="0,0,6,0" ToolTip="Kurangi 1 px"/>
+                                <Slider x:Name="SliderDotSize" Grid.Column="2" Minimum="1" Maximum="16" Value="3" ValueChanged="Slider_ValueChanged" />
+                                <Button Grid.Column="3" Style="{StaticResource SmallStepButton}" Content="+" Click="BtnDotSizePlus_Click" Margin="6,0,6,0" ToolTip="Tambah 1 px"/>
+                                <TextBlock x:Name="LblDotSize" Grid.Column="4" Text="{Binding Value, ElementName=SliderDotSize, StringFormat={}{0:0}}" Style="{StaticResource ValueLabel}"/>
                             </Grid>
 
                             <!-- Opacity -->
                             <Grid Margin="0,4">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="140" />
+                                    <ColumnDefinition Width="130" />
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="45" />
+                                    <ColumnDefinition Width="42" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="Opacity (%)" Style="{StaticResource SettingLabel}"/>
                                 <Slider x:Name="SliderOpacity" Grid.Column="1" Minimum="10" Maximum="100" Value="100" ValueChanged="Slider_ValueChanged" />
@@ -440,13 +483,17 @@
 
                             <Grid Margin="0,4">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="140" />
+                                    <ColumnDefinition Width="130" />
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="45" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="42" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="Outline Thickness (px)" Style="{StaticResource SettingLabel}"/>
-                                <Slider x:Name="SliderOutlineThickness" Grid.Column="1" Minimum="0.5" Maximum="4" Value="1" ValueChanged="Slider_ValueChanged" />
-                                <TextBlock x:Name="LblOutlineThickness" Grid.Column="2" Text="{Binding Value, ElementName=SliderOutlineThickness, StringFormat={}{0:0.0}}" Style="{StaticResource ValueLabel}"/>
+                                <Button Grid.Column="1" Style="{StaticResource SmallStepButton}" Content="-" Click="BtnOutlineMinus_Click" Margin="0,0,6,0" ToolTip="Kurangi 0.5 px"/>
+                                <Slider x:Name="SliderOutlineThickness" Grid.Column="2" Minimum="0.5" Maximum="4" Value="1" ValueChanged="Slider_ValueChanged" />
+                                <Button Grid.Column="3" Style="{StaticResource SmallStepButton}" Content="+" Click="BtnOutlinePlus_Click" Margin="6,0,6,0" ToolTip="Tambah 0.5 px"/>
+                                <TextBlock x:Name="LblOutlineThickness" Grid.Column="4" Text="{Binding Value, ElementName=SliderOutlineThickness, StringFormat={}{0:0.0}}" Style="{StaticResource ValueLabel}"/>
                             </Grid>
                         </StackPanel>
                     </Border>
@@ -465,25 +512,33 @@
                             <!-- Offset X -->
                             <Grid Margin="0,4">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="140" />
+                                    <ColumnDefinition Width="130" />
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="45" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="42" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="Offset X (Horizontal px)" Style="{StaticResource SettingLabel}"/>
-                                <Slider x:Name="SliderOffsetX" Grid.Column="1" Minimum="-100" Maximum="100" Value="0" ValueChanged="Slider_ValueChanged" />
-                                <TextBlock x:Name="LblOffsetX" Grid.Column="2" Text="{Binding Value, ElementName=SliderOffsetX, StringFormat={}{0:0}}" Style="{StaticResource ValueLabel}"/>
+                                <Button Grid.Column="1" Style="{StaticResource SmallStepButton}" Content="-" Click="BtnOffsetXMinus_Click" Margin="0,0,6,0" ToolTip="Geser Kiri 1 px"/>
+                                <Slider x:Name="SliderOffsetX" Grid.Column="2" Minimum="-100" Maximum="100" Value="0" ValueChanged="Slider_ValueChanged" />
+                                <Button Grid.Column="3" Style="{StaticResource SmallStepButton}" Content="+" Click="BtnOffsetXPlus_Click" Margin="6,0,6,0" ToolTip="Geser Kanan 1 px"/>
+                                <TextBlock x:Name="LblOffsetX" Grid.Column="4" Text="{Binding Value, ElementName=SliderOffsetX, StringFormat={}{0:0}}" Style="{StaticResource ValueLabel}"/>
                             </Grid>
 
                             <!-- Offset Y -->
                             <Grid Margin="0,4">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="140" />
+                                    <ColumnDefinition Width="130" />
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="45" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="42" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="Offset Y (Vertical px)" Style="{StaticResource SettingLabel}"/>
-                                <Slider x:Name="SliderOffsetY" Grid.Column="1" Minimum="-100" Maximum="100" Value="0" ValueChanged="Slider_ValueChanged" />
-                                <TextBlock x:Name="LblOffsetY" Grid.Column="2" Text="{Binding Value, ElementName=SliderOffsetY, StringFormat={}{0:0}}" Style="{StaticResource ValueLabel}"/>
+                                <Button Grid.Column="1" Style="{StaticResource SmallStepButton}" Content="-" Click="BtnOffsetYMinus_Click" Margin="0,0,6,0" ToolTip="Geser Atas 1 px"/>
+                                <Slider x:Name="SliderOffsetY" Grid.Column="2" Minimum="-100" Maximum="100" Value="0" ValueChanged="Slider_ValueChanged" />
+                                <Button Grid.Column="3" Style="{StaticResource SmallStepButton}" Content="+" Click="BtnOffsetYPlus_Click" Margin="6,0,6,0" ToolTip="Geser Bawah 1 px"/>
+                                <TextBlock x:Name="LblOffsetY" Grid.Column="4" Text="{Binding Value, ElementName=SliderOffsetY, StringFormat={}{0:0}}" Style="{StaticResource ValueLabel}"/>
                             </Grid>
                         </StackPanel>
                     </Border>
@@ -535,8 +590,8 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <Button x:Name="BtnResetAll" Style="{StaticResource RoundedButtonStyle}" Content="Reset to Defaults" Click="BtnResetAll_Click"
-                        Padding="12,8" FontSize="12" Background="#20242D" Foreground="#8B949E" BorderBrush="#353D4D" BorderThickness="1"/>
+                <Button x:Name="BtnResetAll" Style="{StaticResource RoundedButtonStyle}" Content="↺  Reset to Defaults" Click="BtnResetAll_Click"
+                        Padding="14,8" FontSize="12" Background="#222732" Foreground="#CBD5E1" BorderBrush="#3B4455" BorderThickness="1" ToolTip="Kembalikan semua setting (gaya, warna, ukuran, offset) ke default awal"/>
 
                 <StackPanel Grid.Column="2" Orientation="Horizontal">
                     <Button x:Name="BtnToggleVisibility" Style="{StaticResource RoundedButtonStyle}" Content="Toggle Overlay (F10)" Click="BtnToggleVisibility_Click"

@@ -265,6 +265,27 @@ namespace CrosshairOverlay.Views
             _config.HasOutline = ChkHasOutline.IsChecked == true;
         }
 
+        private void BtnSizeMinus_Click(object sender, RoutedEventArgs e) => SliderSize.Value = Math.Max(SliderSize.Minimum, SliderSize.Value - 1);
+        private void BtnSizePlus_Click(object sender, RoutedEventArgs e) => SliderSize.Value = Math.Min(SliderSize.Maximum, SliderSize.Value + 1);
+
+        private void BtnThicknessMinus_Click(object sender, RoutedEventArgs e) => SliderThickness.Value = Math.Max(SliderThickness.Minimum, SliderThickness.Value - 1);
+        private void BtnThicknessPlus_Click(object sender, RoutedEventArgs e) => SliderThickness.Value = Math.Min(SliderThickness.Maximum, SliderThickness.Value + 1);
+
+        private void BtnGapMinus_Click(object sender, RoutedEventArgs e) => SliderGap.Value = Math.Max(SliderGap.Minimum, SliderGap.Value - 1);
+        private void BtnGapPlus_Click(object sender, RoutedEventArgs e) => SliderGap.Value = Math.Min(SliderGap.Maximum, SliderGap.Value + 1);
+
+        private void BtnDotSizeMinus_Click(object sender, RoutedEventArgs e) => SliderDotSize.Value = Math.Max(SliderDotSize.Minimum, SliderDotSize.Value - 1);
+        private void BtnDotSizePlus_Click(object sender, RoutedEventArgs e) => SliderDotSize.Value = Math.Min(SliderDotSize.Maximum, SliderDotSize.Value + 1);
+
+        private void BtnOutlineMinus_Click(object sender, RoutedEventArgs e) => SliderOutlineThickness.Value = Math.Max(SliderOutlineThickness.Minimum, Math.Round(SliderOutlineThickness.Value - 0.5, 1));
+        private void BtnOutlinePlus_Click(object sender, RoutedEventArgs e) => SliderOutlineThickness.Value = Math.Min(SliderOutlineThickness.Maximum, Math.Round(SliderOutlineThickness.Value + 0.5, 1));
+
+        private void BtnOffsetXMinus_Click(object sender, RoutedEventArgs e) => SliderOffsetX.Value = Math.Max(SliderOffsetX.Minimum, SliderOffsetX.Value - 1);
+        private void BtnOffsetXPlus_Click(object sender, RoutedEventArgs e) => SliderOffsetX.Value = Math.Min(SliderOffsetX.Maximum, SliderOffsetX.Value + 1);
+
+        private void BtnOffsetYMinus_Click(object sender, RoutedEventArgs e) => SliderOffsetY.Value = Math.Max(SliderOffsetY.Minimum, SliderOffsetY.Value - 1);
+        private void BtnOffsetYPlus_Click(object sender, RoutedEventArgs e) => SliderOffsetY.Value = Math.Min(SliderOffsetY.Maximum, SliderOffsetY.Value + 1);
+
         private void BtnResetOffset_Click(object sender, RoutedEventArgs e)
         {
             SliderOffsetX.Value = 0;
