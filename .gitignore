@@ -1,0 +1,20 @@
+## Build & Output directories
+[Bb]in/
+[Oo]bj/
+publish/
+publish-single/
+
+## Executables & Binaries
+*.exe
+*.dll
+*.pdb
+
+## IDE & User Settings
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Local Configuration
+crosshair_settings.json
