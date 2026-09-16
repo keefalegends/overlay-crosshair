@@ -1,85 +1,79 @@
-# Windows Crosshair Overlay
+﻿# Crosshair Overlay
 
-Aplikasi overlay crosshair ringan dan modern untuk Windows, dirancang khusus untuk game yang tidak memiliki crosshair bawaan (hardcore FPS, mode realism, senjata sniper/shotgun hip-fire, atau game simulasi).
+A free, lightweight, esports-grade crosshair overlay for Windows. Built for games that don't provide a built-in crosshair.
 
----
-
-## Fitur Utama
-
-- **Click-Through Transparan**: Menggunakan Win32 Extended Styles (`WS_EX_TRANSPARENT | WS_EX_LAYERED | WS_EX_NOACTIVATE`) sehingga klik mouse dan keyboard langsung tembus ke game tanpa delay atau kehilangan fokus.
-- **Ringan & Cepat**: Dibangun dengan C# .NET WPF hardware-accelerated (DirectX), ukuran executable hanya ~200 KB, tanpa beban CPU/GPU.
-- **8 Gaya Crosshair**:
-  - Classic Cross (`+`)
-  - Center Dot (`•`)
-  - Cross + Dot (`+•`)
-  - T-Shape (`⊥`)
-  - Circle (`O`)
-  - Circle + Dot (`⊙`)
-  - Chevron (`^`)
-  - Box (`□`)
-- **Outline Kontras (Border)**: Menjamin crosshair selalu terlihat jelas, baik di latar peta salju/terang maupun lorong gelap.
-- **Kustomisasi Lengkap**:
-  - Panjang garis (Size)
-  - Ketebalan garis (Thickness)
-  - Jarak tengah (Gap)
-  - Ukuran Dot
-  - Opacity (Transparansi)
-  - Preset warna neon (Hijau, Cyan, Merah, Kuning, Putih, Ungu, Oranye) + Custom HEX Picker
-- **Kalibrasi Posisi (Offset X & Y)**: Geser posisi crosshair pixel-per-pixel jika tembakan senjata game sedikit melenceng dari titik tengah monitor.
-- **Auto Re-centering**: Otomatis menyesuaikan posisi saat resolusi monitor berubah.
-- **Penyimpanan Otomatis**: Semua preferensi tersimpan otomatis di `crosshair_settings.json`.
+[![Release](https://img.shields.io/github/v/release/keefalegends/overlay-crosshair?color=10B981&label=Download)](https://github.com/keefalegends/overlay-crosshair/releases/latest/download/CrosshairOverlay.exe)
+[![License: MIT](https://img.shields.io/badge/license-MIT-10B981)](LICENSE)
+![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-blue)
 
 ---
 
-## Tombol Pintas Global (In-Game Hotkeys)
+## Download
 
-Dapat ditekan langsung kapan saja saat sedang bermain game:
+**[→ Download CrosshairOverlay.exe](https://github.com/keefalegends/overlay-crosshair/releases/latest/download/CrosshairOverlay.exe)**
 
-| Tombol | Fungsi |
+No installation required. Single self-contained `.exe`. No .NET runtime needed.
+
+---
+
+## Features
+
+- **Anti-Cheat Safe** — Pure DWM transparent overlay. No DLL injection, no memory hooks.
+- **Zero Input Lag** — Native Win32 `WS_EX_TRANSPARENT` pass-through. Clicks go straight to the game.
+- **8 Reticle Shapes** — Classic Cross, Center Dot, Cross+Dot, T-Shape, Circle, Circle+Dot, Chevron, Box
+- **Full Customization** — Size, thickness, center gap, dot size, opacity, outline contrast, color (preset + custom HEX)
+- **Screen Calibration** — Pixel-level Offset X/Y nudge with one-click center reset
+- **Live Preview** — Settings panel shows real-time reticle preview
+- **Auto-save** — Settings persist automatically via `crosshair_settings.json`
+
+---
+
+## Hotkeys
+
+| Key | Action |
 |---|---|
-| **`F10`** | **Toggle Overlay ON / OFF** (Sembunyikan/tampilkan crosshair seketika) |
-| **`F9`** | **Buka / Tutup Pengaturan** (Show/Hide Settings Dashboard) |
-| **`Page Up`** | Ganti ke gaya crosshair **berikutnya** |
-| **`Page Down`** | Ganti ke gaya crosshair **sebelumnya** |
+| `F10` | Toggle overlay on/off |
+| `F9` | Show/hide settings |
+| `Page Up / Down` | Cycle reticle shape |
 
 ---
 
-## Cara Menjalankan
+## Usage
 
-### Cara Cepat (Langsung Pakai):
-Cukup **double-click** file:
-```text
-CrosshairOverlay.exe
-```
-di folder ini.
-
-1. Jendela pengaturan (Settings) akan terbuka beserta crosshair di tengah layar.
-2. Atur gaya, warna, dan ukuran sesuai selera (kamu bisa lihat perubahannya secara langsung di layar).
-3. Klik tombol hijau **"Play Game (Hide Settings)"** atau tekan **`F9`** untuk menyembunyikan menu pengaturan dan fokus bermain.
-4. Di dalam game, jika ingin mematikan crosshair sementara, tekan **`F10`**.
+1. Download and run `CrosshairOverlay.exe`
+2. Configure shape, color, and size in the settings panel
+3. Set your game to **Borderless Windowed** mode
+4. Press `F9` to hide settings and start playing
 
 ---
 
-## Catatan Penting untuk Gamer
+## Stack
 
-> [!TIP]
-> **Mode Tampilan Game**:
-> Selalu atur opsi tampilan game kamu ke **Borderless Windowed** (atau Windowed).
-> Mode *Exclusive Fullscreen* bawaan Windows versi lama terkadang memprioritaskan render game di atas layer DWM Windows, sedangkan *Borderless Windowed* memungkinkan overlay berjalan mulus 100% tanpa gangguan dan tanpa delay.
-
-> [!NOTE]
-> **Aman dari Anti-Cheat**:
-> Aplikasi ini tidak menginjeksi DLL, tidak mengaitkan memory game, dan tidak memodifikasi file game apa pun. Ini adalah jendela Windows transparan murni.
+| Layer | Tech |
+|---|---|
+| Language | C# 13 / .NET 10 |
+| UI Framework | WPF (Windows Presentation Foundation) |
+| Rendering | `DrawingContext` — DirectX hardware-accelerated vector |
+| Overlay | Win32 `WS_EX_TRANSPARENT \| WS_EX_LAYERED \| WS_EX_TOOLWINDOW` |
+| Persistence | JSON (`System.Text.Json`) |
+| Distribution | Single-file self-contained executable (`PublishSingleFile=true`) |
 
 ---
 
-## Cara Build Ulang dari Source Code
+## Build from Source
 
-Jika ingin memodifikasi atau meng-compile ulang:
 ```bash
-# Build & Jalankan secara langsung
+# Run in development
 dotnet run
 
-# Build standalone Release executable
-dotnet publish -c Release -r win-x64 -p:PublishSingleFile=true --self-contained false -o .
+# Build standalone release exe
+dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o ./dist
 ```
+
+Requires .NET 10 SDK.
+
+---
+
+## License
+
+MIT © [KeefaLegends](https://github.com/keefalegends)
