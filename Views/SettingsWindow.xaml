@@ -4,10 +4,10 @@
         xmlns:controls="clr-namespace:CrosshairOverlay.Controls"
         xmlns:models="clr-namespace:CrosshairOverlay.Models"
         Title="Crosshair Overlay"
-        Height="660" Width="850"
-        MinHeight="620" MinWidth="800"
+        Height="700" Width="880"
+        MinHeight="620" MinWidth="820"
         WindowStartupLocation="CenterScreen"
-        Background="#121316"
+        Background="#111215"
         Foreground="#EDEDED"
         FontFamily="Segoe UI"
         WindowStyle="None"
@@ -15,19 +15,20 @@
         ResizeMode="CanResizeWithGrip">
 
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="42"
-                      CornerRadius="6"
+        <WindowChrome CaptionHeight="44"
+                      CornerRadius="8"
                       GlassFrameThickness="0"
                       ResizeBorderThickness="5" />
     </WindowChrome.WindowChrome>
 
     <Window.Resources>
-        <!-- Refined Esports Dark Palette -->
-        <SolidColorBrush x:Key="BgMain" Color="#121316" />
-        <SolidColorBrush x:Key="PanelBg" Color="#18191E" />
-        <SolidColorBrush x:Key="PanelBorder" Color="#262830" />
-        <SolidColorBrush x:Key="PanelInset" Color="#131417" />
-        <SolidColorBrush x:Key="DividerColor" Color="#22242A" />
+        <!-- Modern Esports Dark Palette -->
+        <SolidColorBrush x:Key="BgMain" Color="#111215" />
+        <SolidColorBrush x:Key="PanelBg" Color="#16171C" />
+        <SolidColorBrush x:Key="CardBg" Color="#181920" />
+        <SolidColorBrush x:Key="PanelBorder" Color="#252732" />
+        <SolidColorBrush x:Key="PanelInset" Color="#101114" />
+        <SolidColorBrush x:Key="DividerColor" Color="#22242E" />
 
         <SolidColorBrush x:Key="AccentGreen" Color="#10B981" />
         <SolidColorBrush x:Key="AccentGreenHover" Color="#059669" />
@@ -37,23 +38,71 @@
         <SolidColorBrush x:Key="TextSecondary" Color="#9CA3AF" />
         <SolidColorBrush x:Key="TextMuted" Color="#6B7280" />
 
-        <SolidColorBrush x:Key="ControlBg" Color="#202227" />
-        <SolidColorBrush x:Key="ControlBorder" Color="#2D3038" />
-        <SolidColorBrush x:Key="ControlHover" Color="#2B2E37" />
+        <SolidColorBrush x:Key="ControlBg" Color="#1F2128" />
+        <SolidColorBrush x:Key="ControlBorder" Color="#2B2E38" />
+        <SolidColorBrush x:Key="ControlHover" Color="#292D38" />
 
-        <!-- Flat Slider Style (Ultra-Lightweight, No GPU Blur) -->
+        <!-- Minimal Modern ScrollBar (Ultra-Lightweight, 6px Vector Thumb) -->
+        <Style x:Key="ModernScrollBarThumb" TargetType="{x:Type Thumb}">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Border CornerRadius="3" Background="#2B2F3D" x:Name="thumbBorder" Margin="1,0"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="thumbBorder" Property="Background" Value="#10B981"/>
+                            </Trigger>
+                            <Trigger Property="IsDragging" Value="True">
+                                <Setter TargetName="thumbBorder" Property="Background" Value="#34D399"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type ScrollBar}">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Style.Triggers>
+                <Trigger Property="Orientation" Value="Vertical">
+                    <Setter Property="Width" Value="6"/>
+                    <Setter Property="Height" Value="Auto"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ScrollBar}">
+                                <Grid Background="Transparent" SnapsToDevicePixels="True">
+                                    <Track x:Name="PART_Track" IsDirectionReversed="True" Focusable="False">
+                                        <Track.Thumb>
+                                            <Thumb Style="{StaticResource ModernScrollBarThumb}"/>
+                                        </Track.Thumb>
+                                    </Track>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Modern Flat Slider Style -->
         <Style x:Key="SliderThumbStyle" TargetType="Thumb">
             <Setter Property="SnapsToDevicePixels" Value="True"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="Height" Value="14"/>
-            <Setter Property="Width" Value="14"/>
+            <Setter Property="Height" Value="16"/>
+            <Setter Property="Width" Value="16"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Thumb">
-                        <Ellipse x:Name="ellipse" Fill="#EDEDED" Width="14" Height="14" Cursor="Hand"/>
+                        <Ellipse x:Name="ellipse" Fill="#EDEDED" Stroke="#181920" StrokeThickness="2.5" Width="16" Height="16" Cursor="Hand"/>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="ellipse" Property="Fill" Value="#10B981"/>
+                                <Setter TargetName="ellipse" Property="Stroke" Value="#0F241C"/>
                             </Trigger>
                             <Trigger Property="IsDragging" Value="True">
                                 <Setter TargetName="ellipse" Property="Fill" Value="#34D399"/>
@@ -73,8 +122,8 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Slider">
-                        <Grid VerticalAlignment="Center">
-                            <Border Height="4" CornerRadius="2" Background="#24262E"/>
+                        <Grid VerticalAlignment="Center" Height="22">
+                            <Border Height="4" CornerRadius="2" Background="#252733"/>
                             <Track x:Name="PART_Track">
                                 <Track.Thumb>
                                     <Thumb Style="{StaticResource SliderThumbStyle}"/>
@@ -86,12 +135,47 @@
             </Setter>
         </Style>
 
+        <!-- Modern CheckBox Style -->
+        <Style TargetType="CheckBox">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Foreground" Value="#C2C7D0"/>
+            <Setter Property="FontSize" Value="11.5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Border x:Name="chkBox" Width="16" Height="16" CornerRadius="4"
+                                    Background="#1F2128" BorderBrush="#2F3340" BorderThickness="1.5"
+                                    VerticalAlignment="Center" Margin="0,0,7,0">
+                                <Path x:Name="chkMark" Data="M 2.5 5.5 L 5 8 L 9.5 3.5"
+                                      Stroke="#0E1013" StrokeThickness="1.8" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                      Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="chkBox" Property="Background" Value="#10B981"/>
+                                <Setter TargetName="chkBox" Property="BorderBrush" Value="#10B981"/>
+                                <Setter TargetName="chkMark" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="chkBox" Property="BorderBrush" Value="#10B981"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!-- Minimal Section Header Style -->
         <Style x:Key="SectionHeading" TargetType="TextBlock">
             <Setter Property="FontSize" Value="11"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Foreground" Value="#9CA3AF"/>
-            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
         </Style>
 
         <!-- Setting Row Label Style -->
@@ -108,31 +192,34 @@
             <Setter Property="Foreground" Value="#EDEDED"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="TextAlignment" Value="Right"/>
-            <Setter Property="Width" Value="46"/>
+            <Setter Property="Width" Value="48"/>
             <Setter Property="Margin" Value="4,0,0,0"/>
         </Style>
 
         <!-- Tactile Step Button (+ / -) -->
         <Style x:Key="SmallStepButton" TargetType="Button">
-            <Setter Property="Width" Value="22"/>
-            <Setter Property="Height" Value="22"/>
-            <Setter Property="Background" Value="#202227"/>
+            <Setter Property="Width" Value="24"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Background" Value="#1F2128"/>
             <Setter Property="Foreground" Value="#9CA3AF"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="b" Background="{TemplateBinding Background}" CornerRadius="3"
-                                BorderBrush="#2A2C34" BorderThickness="1">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-2,0,0"/>
+                        <Border x:Name="b" Background="{TemplateBinding Background}" CornerRadius="5"
+                                BorderBrush="#2B2E38" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-1,0,0"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="b" Property="Background" Value="#2B2E37"/>
-                                <Setter TargetName="b" Property="BorderBrush" Value="#3D414D"/>
+                                <Setter TargetName="b" Property="Background" Value="#292D38"/>
+                                <Setter TargetName="b" Property="BorderBrush" Value="#3E4454"/>
                                 <Setter Property="Foreground" Value="#10B981"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="b" Property="Background" Value="#15171D"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -146,20 +233,20 @@
             <Setter Property="Foreground" Value="#8B949E"/>
             <Setter Property="FontSize" Value="11.5"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Padding" Value="12,5"/>
+            <Setter Property="Padding" Value="14,6"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="RadioButton">
-                        <Border x:Name="b" Background="Transparent" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                        <Border x:Name="b" Background="Transparent" CornerRadius="5" Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="b" Property="Background" Value="#1E2026"/>
+                                <Setter TargetName="b" Property="Background" Value="#1E2028"/>
                                 <Setter Property="Foreground" Value="#EDEDED"/>
                             </Trigger>
                             <Trigger Property="IsChecked" Value="True">
-                                <Setter TargetName="b" Property="Background" Value="#22252D"/>
+                                <Setter TargetName="b" Property="Background" Value="#232630"/>
                                 <Setter Property="Foreground" Value="#10B981"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
@@ -174,7 +261,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="4"
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="5"
                                 BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -191,14 +278,14 @@
 
         <!-- Color Palette Button -->
         <Style x:Key="ColorButtonStyle" TargetType="Button">
-            <Setter Property="Width" Value="26"/>
-            <Setter Property="Height" Value="26"/>
-            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Width" Value="28"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Margin" Value="3"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="4" BorderBrush="#2B2D35" BorderThickness="1"/>
+                        <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="5" BorderBrush="#2B2D37" BorderThickness="1"/>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="border" Property="BorderBrush" Value="#FFFFFF"/>
@@ -215,10 +302,10 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
-                    <ColumnDefinition Width="24"/>
+                    <ColumnDefinition Width="26"/>
                 </Grid.ColumnDefinitions>
-                <Border x:Name="Border" Grid.ColumnSpan="2" CornerRadius="4"
-                        Background="#1E2026" BorderBrush="#2D3038" BorderThickness="1"/>
+                <Border x:Name="Border" Grid.ColumnSpan="2" CornerRadius="5"
+                        Background="#1A1C23" BorderBrush="#2B2E38" BorderThickness="1"/>
                 <Path x:Name="Arrow" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
                       Fill="#7E8494" Data="M 0 0 L 3.5 3.5 L 7 0 Z"/>
             </Grid>
@@ -242,7 +329,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBoxItem">
-                        <Border x:Name="ItemBorder" Background="#16171B" CornerRadius="3" Margin="2,1" Padding="10,6">
+                        <Border x:Name="ItemBorder" Background="#16171D" CornerRadius="4" Margin="2,1" Padding="10,6">
                             <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"
                                               TextElement.Foreground="{TemplateBinding Foreground}"/>
                         </Border>
@@ -270,7 +357,7 @@
             <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
             <Setter Property="Foreground" Value="#EDEDED"/>
             <Setter Property="FontSize" Value="11.5"/>
-            <Setter Property="Height" Value="30"/>
+            <Setter Property="Height" Value="32"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBox">
@@ -285,7 +372,7 @@
                                               Content="{TemplateBinding SelectionBoxItem}"
                                               ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                                               ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                                              Margin="10,2,24,2"
+                                              Margin="10,2,26,2"
                                               VerticalAlignment="Center"
                                               HorizontalAlignment="Left"/>
                             <Popup x:Name="Popup"
@@ -297,12 +384,12 @@
                                 <Grid x:Name="DropDown"
                                       SnapsToDevicePixels="True"
                                       MinWidth="{TemplateBinding ActualWidth}"
-                                      MaxHeight="200">
+                                      MaxHeight="220">
                                     <Border x:Name="DropDownBorder"
-                                            Background="#16171B"
-                                            BorderBrush="#2D3038"
+                                            Background="#16171D"
+                                            BorderBrush="#2B2E38"
                                             BorderThickness="1"
-                                            CornerRadius="4"
+                                            CornerRadius="5"
                                             Margin="0,2,0,0">
                                         <ScrollViewer Margin="2,3" SnapsToDevicePixels="True">
                                             <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
@@ -320,16 +407,16 @@
     <Grid>
         <Grid.RowDefinitions>
             <!-- Header Bar -->
-            <RowDefinition Height="42" />
-            <!-- Main Content Viewport (Fixed, Zero Scrollbars) -->
+            <RowDefinition Height="44" />
+            <!-- Main Content Viewport -->
             <RowDefinition Height="*" />
             <!-- Footer Bar -->
-            <RowDefinition Height="50" />
+            <RowDefinition Height="52" />
         </Grid.RowDefinitions>
 
         <!-- TOP HEADER -->
-        <Border Grid.Row="0" Background="#141519" BorderBrush="#22242A" BorderThickness="0,0,0,1">
-            <Grid Margin="14,0,8,0">
+        <Border Grid.Row="0" Background="#14151A" BorderBrush="#22242E" BorderThickness="0,0,0,1">
+            <Grid Margin="16,0,10,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
@@ -338,17 +425,17 @@
 
                 <!-- Brand & Status -->
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Border Width="20" Height="20" CornerRadius="4" Background="#10B981" Margin="0,0,8,0">
-                        <TextBlock Text="+" FontSize="14" FontWeight="Bold" Foreground="#0E1013"
+                    <Border Width="22" Height="22" CornerRadius="5" Background="#10B981" Margin="0,0,9,0">
+                        <TextBlock Text="+" FontSize="15" FontWeight="Bold" Foreground="#0E1013"
                                    HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-2,0,0"/>
                     </Border>
-                    <TextBlock Text="CROSSHAIR" FontWeight="Bold" FontSize="12.5" Foreground="#EDEDED" VerticalAlignment="Center"/>
-                    <TextBlock Text="OVERLAY" FontWeight="Normal" FontSize="12.5" Foreground="#7E8494" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                    <TextBlock Text="CROSSHAIR" FontWeight="Bold" FontSize="13" Foreground="#EDEDED" VerticalAlignment="Center"/>
+                    <TextBlock Text="OVERLAY" FontWeight="Normal" FontSize="13" Foreground="#7E8494" VerticalAlignment="Center" Margin="4,0,0,0"/>
                     
                     <!-- Clean Minimal Status Indicator -->
-                    <Border Background="#132B22" CornerRadius="10" Padding="8,2" Margin="10,0,0,0">
+                    <Border Background="#132B22" CornerRadius="10" Padding="8,3" Margin="12,0,0,0">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Ellipse Width="5" Height="5" Fill="#10B981" Margin="0,0,5,0"/>
+                            <Ellipse Width="5.5" Height="5.5" Fill="#10B981" Margin="0,0,5,0"/>
                             <TextBlock x:Name="TxtStatus" Text="ACTIVE" FontSize="9.5" FontWeight="Bold" Foreground="#10B981"/>
                         </StackPanel>
                     </Border>
@@ -356,7 +443,7 @@
 
                 <!-- Center Segmented Navigation -->
                 <Border Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
-                        Background="#1A1B20" BorderBrush="#26282E" BorderThickness="1" CornerRadius="5" Padding="2"
+                        Background="#191B21" BorderBrush="#262832" BorderThickness="1" CornerRadius="6" Padding="2"
                         WindowChrome.IsHitTestVisibleInChrome="True">
                     <StackPanel Orientation="Horizontal">
                         <RadioButton x:Name="TabSettings" Content="Settings" IsChecked="True"
@@ -368,15 +455,15 @@
 
                 <!-- Window Chrome Buttons -->
                 <StackPanel Grid.Column="2" Orientation="Horizontal" WindowChrome.IsHitTestVisibleInChrome="True">
-                    <Button x:Name="BtnMinimize" Click="BtnMinimize_Click" Width="32" Height="28" Background="Transparent" BorderThickness="0"
+                    <Button x:Name="BtnMinimize" Click="BtnMinimize_Click" Width="34" Height="30" Background="Transparent" BorderThickness="0"
                             Foreground="#7E8494" FontSize="12" Cursor="Hand" ToolTip="Minimize">
                         <TextBlock Text="—" Margin="0,-2,0,0"/>
                     </Button>
-                    <Button x:Name="BtnHideToTray" Click="BtnHideToTray_Click" Width="32" Height="28" Background="Transparent" BorderThickness="0"
+                    <Button x:Name="BtnHideToTray" Click="BtnHideToTray_Click" Width="34" Height="30" Background="Transparent" BorderThickness="0"
                             Foreground="#7E8494" FontSize="9" Cursor="Hand" ToolTip="Hide to background (Keep Crosshair Active)">
                         <TextBlock Text="▼" Margin="0,1,0,0"/>
                     </Button>
-                    <Button x:Name="BtnClose" Click="BtnClose_Click" Width="32" Height="28" Background="Transparent" BorderThickness="0"
+                    <Button x:Name="BtnClose" Click="BtnClose_Click" Width="34" Height="30" Background="Transparent" BorderThickness="0"
                             Foreground="#7E8494" FontSize="12" Cursor="Hand" ToolTip="Close Application">
                         <TextBlock Text="✕"/>
                     </Button>
@@ -384,16 +471,16 @@
             </Grid>
         </Border>
 
-        <!-- VIEW 1: SETTINGS VIEW (2-Panel Architecture, Fit Without Scrollbar) -->
-        <Grid x:Name="SettingsView" Grid.Row="1" Margin="14,12,14,10">
+        <!-- VIEW 1: SETTINGS VIEW (Full-Height Modern Card Architecture) -->
+        <Grid x:Name="SettingsView" Grid.Row="1" Margin="16,14,16,12">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="290" />
-                <ColumnDefinition Width="12" />
+                <ColumnDefinition Width="310" />
+                <ColumnDefinition Width="14" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
             <!-- LEFT PANEL: Preview, Shape Selector, Color Accent -->
-            <Border Grid.Column="0" Background="#18191E" BorderBrush="#262830" BorderThickness="1" CornerRadius="6" Padding="12">
+            <Border Grid.Column="0" Background="#16171C" BorderBrush="#252732" BorderThickness="1" CornerRadius="8" Padding="14">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -403,16 +490,19 @@
 
                     <!-- 1. Live Preview Viewport -->
                     <StackPanel Grid.Row="0">
-                        <TextBlock Text="RETICLE PREVIEW" Style="{StaticResource SectionHeading}"/>
-                        <Border Height="165" CornerRadius="5" Background="#121316" BorderBrush="#23252B" BorderThickness="1" ClipToBounds="True">
+                        <Grid Margin="0,0,0,8">
+                            <TextBlock Text="RETICLE PREVIEW" Style="{StaticResource SectionHeading}" Margin="0"/>
+                            <TextBlock Text="1:1 CANVAS" HorizontalAlignment="Right" FontSize="9.5" FontWeight="SemiBold" Foreground="#555B6D" VerticalAlignment="Center"/>
+                        </Grid>
+                        <Border Height="190" CornerRadius="6" Background="#0F1013" BorderBrush="#23252E" BorderThickness="1" ClipToBounds="True">
                             <controls:CrosshairRenderer x:Name="PreviewRenderer" IsPreview="True" />
                         </Border>
                     </StackPanel>
 
                     <!-- 2. Style Selector -->
-                    <StackPanel Grid.Row="1" Margin="0,12,0,0">
+                    <StackPanel Grid.Row="1" Margin="0,14,0,0">
                         <TextBlock Text="RETICLE SHAPE" Style="{StaticResource SectionHeading}"/>
-                        <ComboBox x:Name="CmbStyle" SelectionChanged="CmbStyle_SelectionChanged" Height="30">
+                        <ComboBox x:Name="CmbStyle" SelectionChanged="CmbStyle_SelectionChanged" Height="32">
                             <ComboBoxItem Content="✚  Classic Cross (+)" />
                             <ComboBoxItem Content="•   Center Dot (•)" />
                             <ComboBoxItem Content="✛  Cross + Dot (+•)" IsSelected="True" />
@@ -424,10 +514,10 @@
                         </ComboBox>
                     </StackPanel>
 
-                    <!-- 3. Color & Palette -->
-                    <StackPanel Grid.Row="2" Margin="0,12,0,0">
+                    <!-- 3. Color & Accent -->
+                    <StackPanel Grid.Row="2" Margin="0,14,0,0">
                         <TextBlock Text="COLOR &amp; ACCENT" Style="{StaticResource SectionHeading}"/>
-                        <WrapPanel Margin="0,0,0,8">
+                        <WrapPanel Margin="0,0,0,10">
                             <Button Style="{StaticResource ColorButtonStyle}" Background="#10B981" Click="PresetColor_Click" Tag="#10B981" ToolTip="Emerald Green"/>
                             <Button Style="{StaticResource ColorButtonStyle}" Background="#00FF66" Click="PresetColor_Click" Tag="#00FF66" ToolTip="Neon Green"/>
                             <Button Style="{StaticResource ColorButtonStyle}" Background="#00F0FF" Click="PresetColor_Click" Tag="#00F0FF" ToolTip="Cyan"/>
@@ -444,219 +534,224 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="HEX:" VerticalAlignment="Center" FontSize="11" Foreground="{StaticResource TextMuted}" Margin="0,0,8,0"/>
-                            <TextBox x:Name="TxtColorHex" Grid.Column="1" Height="26" Background="#141519" Foreground="#EDEDED" BorderBrush="#2D3038"
-                                     VerticalContentAlignment="Center" Padding="6,0" TextChanged="TxtColorHex_TextChanged" FontSize="11.5"/>
-                            <Border x:Name="ColorPreviewSwatch" Grid.Column="2" Width="26" Height="26" CornerRadius="3" Background="#10B981" Margin="6,0,0,0" BorderBrush="#2E313A" BorderThickness="1"/>
+                            <TextBlock Text="HEX" VerticalAlignment="Center" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource TextMuted}" Margin="0,0,10,0"/>
+                            <TextBox x:Name="TxtColorHex" Grid.Column="1" Height="28" Background="#111216" Foreground="#EDEDED" BorderBrush="#2B2E38"
+                                     VerticalContentAlignment="Center" Padding="8,0" TextChanged="TxtColorHex_TextChanged" FontSize="11.5" FontFamily="Consolas, Segoe UI"/>
+                            <Border x:Name="ColorPreviewSwatch" Grid.Column="2" Width="28" Height="28" CornerRadius="4" Background="#10B981" Margin="8,0,0,0" BorderBrush="#2E313A" BorderThickness="1"/>
                         </Grid>
                     </StackPanel>
                 </Grid>
             </Border>
 
-            <!-- RIGHT PANEL: Geometry, Outline, Alignment & Shortcuts -->
-            <Border Grid.Column="2" Background="#18191E" BorderBrush="#262830" BorderThickness="1" CornerRadius="6" Padding="16,12">
-                <StackPanel VerticalAlignment="Center">
+            <!-- RIGHT PANEL: Full Height Scrollable Cards -->
+            <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,4,0">
+                <StackPanel VerticalAlignment="Top">
 
-                    <!-- SECTION 1: GEOMETRY -->
-                    <TextBlock Text="GEOMETRY &amp; DIMENSIONS" Style="{StaticResource SectionHeading}"/>
+                    <!-- CARD 1: GEOMETRY & DIMENSIONS -->
+                    <Border Background="#16171C" BorderBrush="#252732" BorderThickness="1" CornerRadius="8" Padding="16,14" Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="GEOMETRY &amp; DIMENSIONS" Style="{StaticResource SectionHeading}"/>
 
-                    <!-- Length -->
-                    <Grid Margin="0,3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="105" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="48" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Length" Style="{StaticResource SettingLabel}" ToolTip="Arm length or circle radius in pixels"/>
-                        <Button Grid.Column="1" Style="{StaticResource SmallStepButton}" Content="-" Click="BtnSizeMinus_Click" Margin="0,0,6,0" ToolTip="Decrease length by 1px"/>
-                        <Slider x:Name="SliderSize" Grid.Column="2" Minimum="2" Maximum="50" Value="10" ValueChanged="Slider_ValueChanged" />
-                        <Button Grid.Column="3" Style="{StaticResource SmallStepButton}" Content="+" Click="BtnSizePlus_Click" Margin="6,0,6,0" ToolTip="Increase length by 1px"/>
-                        <TextBlock x:Name="LblSize" Grid.Column="4" Text="{Binding Value, ElementName=SliderSize, StringFormat={}{0:0}px}" Style="{StaticResource ValueLabel}"/>
-                    </Grid>
+                            <!-- Length -->
+                            <Grid Margin="0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="105" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="48" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Length" Style="{StaticResource SettingLabel}" ToolTip="Arm length or circle radius in pixels"/>
+                                <Button Grid.Column="1" Style="{StaticResource SmallStepButton}" Content="-" Click="BtnSizeMinus_Click" Margin="0,0,8,0" ToolTip="Decrease length by 1px"/>
+                                <Slider x:Name="SliderSize" Grid.Column="2" Minimum="2" Maximum="50" Value="10" ValueChanged="Slider_ValueChanged" />
+                                <Button Grid.Column="3" Style="{StaticResource SmallStepButton}" Content="+" Click="BtnSizePlus_Click" Margin="8,0,8,0" ToolTip="Increase length by 1px"/>
+                                <TextBlock x:Name="LblSize" Grid.Column="4" Text="{Binding Value, ElementName=SliderSize, StringFormat={}{0:0}px}" Style="{StaticResource ValueLabel}"/>
+                            </Grid>
 
-                    <!-- Thickness -->
-                    <Grid Margin="0,3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="105" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="48" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Thickness" Style="{StaticResource SettingLabel}" ToolTip="Line stroke thickness in pixels"/>
-                        <Button Grid.Column="1" Style="{StaticResource SmallStepButton}" Content="-" Click="BtnThicknessMinus_Click" Margin="0,0,6,0" ToolTip="Decrease thickness by 1px"/>
-                        <Slider x:Name="SliderThickness" Grid.Column="2" Minimum="1" Maximum="12" Value="2" ValueChanged="Slider_ValueChanged" />
-                        <Button Grid.Column="3" Style="{StaticResource SmallStepButton}" Content="+" Click="BtnThicknessPlus_Click" Margin="6,0,6,0" ToolTip="Increase thickness by 1px"/>
-                        <TextBlock x:Name="LblThickness" Grid.Column="4" Text="{Binding Value, ElementName=SliderThickness, StringFormat={}{0:0}px}" Style="{StaticResource ValueLabel}"/>
-                    </Grid>
+                            <!-- Thickness -->
+                            <Grid Margin="0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="105" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="48" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Thickness" Style="{StaticResource SettingLabel}" ToolTip="Line stroke thickness in pixels"/>
+                                <Button Grid.Column="1" Style="{StaticResource SmallStepButton}" Content="-" Click="BtnThicknessMinus_Click" Margin="0,0,8,0" ToolTip="Decrease thickness by 1px"/>
+                                <Slider x:Name="SliderThickness" Grid.Column="2" Minimum="1" Maximum="12" Value="2" ValueChanged="Slider_ValueChanged" />
+                                <Button Grid.Column="3" Style="{StaticResource SmallStepButton}" Content="+" Click="BtnThicknessPlus_Click" Margin="8,0,8,0" ToolTip="Increase thickness by 1px"/>
+                                <TextBlock x:Name="LblThickness" Grid.Column="4" Text="{Binding Value, ElementName=SliderThickness, StringFormat={}{0:0}px}" Style="{StaticResource ValueLabel}"/>
+                            </Grid>
 
-                    <!-- Center Gap -->
-                    <Grid Margin="0,3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="105" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="48" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Center Gap" Style="{StaticResource SettingLabel}" ToolTip="Spacing from the center point in pixels"/>
-                        <Button Grid.Column="1" Style="{StaticResource SmallStepButton}" Content="-" Click="BtnGapMinus_Click" Margin="0,0,6,0" ToolTip="Decrease gap by 1px"/>
-                        <Slider x:Name="SliderGap" Grid.Column="2" Minimum="0" Maximum="30" Value="5" ValueChanged="Slider_ValueChanged" />
-                        <Button Grid.Column="3" Style="{StaticResource SmallStepButton}" Content="+" Click="BtnGapPlus_Click" Margin="6,0,6,0" ToolTip="Increase gap by 1px"/>
-                        <TextBlock x:Name="LblGap" Grid.Column="4" Text="{Binding Value, ElementName=SliderGap, StringFormat={}{0:0}px}" Style="{StaticResource ValueLabel}"/>
-                    </Grid>
+                            <!-- Center Gap -->
+                            <Grid Margin="0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="105" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="48" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Center Gap" Style="{StaticResource SettingLabel}" ToolTip="Spacing from the center point in pixels"/>
+                                <Button Grid.Column="1" Style="{StaticResource SmallStepButton}" Content="-" Click="BtnGapMinus_Click" Margin="0,0,8,0" ToolTip="Decrease gap by 1px"/>
+                                <Slider x:Name="SliderGap" Grid.Column="2" Minimum="0" Maximum="30" Value="5" ValueChanged="Slider_ValueChanged" />
+                                <Button Grid.Column="3" Style="{StaticResource SmallStepButton}" Content="+" Click="BtnGapPlus_Click" Margin="8,0,8,0" ToolTip="Increase gap by 1px"/>
+                                <TextBlock x:Name="LblGap" Grid.Column="4" Text="{Binding Value, ElementName=SliderGap, StringFormat={}{0:0}px}" Style="{StaticResource ValueLabel}"/>
+                            </Grid>
 
-                    <!-- Dot Size -->
-                    <Grid Margin="0,3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="105" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="48" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Center Dot" Style="{StaticResource SettingLabel}" ToolTip="Diameter of the center dot"/>
-                        <Button Grid.Column="1" Style="{StaticResource SmallStepButton}" Content="-" Click="BtnDotSizeMinus_Click" Margin="0,0,6,0" ToolTip="Decrease dot size by 1px"/>
-                        <Slider x:Name="SliderDotSize" Grid.Column="2" Minimum="1" Maximum="16" Value="3" ValueChanged="Slider_ValueChanged" />
-                        <Button Grid.Column="3" Style="{StaticResource SmallStepButton}" Content="+" Click="BtnDotSizePlus_Click" Margin="6,0,6,0" ToolTip="Increase dot size by 1px"/>
-                        <TextBlock x:Name="LblDotSize" Grid.Column="4" Text="{Binding Value, ElementName=SliderDotSize, StringFormat={}{0:0}px}" Style="{StaticResource ValueLabel}"/>
-                    </Grid>
+                            <!-- Dot Size -->
+                            <Grid Margin="0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="105" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="48" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Center Dot" Style="{StaticResource SettingLabel}" ToolTip="Diameter of the center dot"/>
+                                <Button Grid.Column="1" Style="{StaticResource SmallStepButton}" Content="-" Click="BtnDotSizeMinus_Click" Margin="0,0,8,0" ToolTip="Decrease dot size by 1px"/>
+                                <Slider x:Name="SliderDotSize" Grid.Column="2" Minimum="1" Maximum="16" Value="3" ValueChanged="Slider_ValueChanged" />
+                                <Button Grid.Column="3" Style="{StaticResource SmallStepButton}" Content="+" Click="BtnDotSizePlus_Click" Margin="8,0,8,0" ToolTip="Increase dot size by 1px"/>
+                                <TextBlock x:Name="LblDotSize" Grid.Column="4" Text="{Binding Value, ElementName=SliderDotSize, StringFormat={}{0:0}px}" Style="{StaticResource ValueLabel}"/>
+                            </Grid>
 
-                    <!-- Opacity -->
-                    <Grid Margin="0,3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="105" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="48" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Opacity" Style="{StaticResource SettingLabel}" ToolTip="Reticle alpha transparency"/>
-                        <Border Grid.Column="1" Width="22"/>
-                        <Slider x:Name="SliderOpacity" Grid.Column="2" Minimum="10" Maximum="100" Value="100" ValueChanged="Slider_ValueChanged" />
-                        <Border Grid.Column="3" Width="28"/>
-                        <TextBlock x:Name="LblOpacity" Grid.Column="4" Text="{Binding Value, ElementName=SliderOpacity, StringFormat={}{0:0}%}" Style="{StaticResource ValueLabel}"/>
-                    </Grid>
+                            <!-- Opacity -->
+                            <Grid Margin="0,5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="105" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="48" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Opacity" Style="{StaticResource SettingLabel}" ToolTip="Reticle alpha transparency"/>
+                                <Border Grid.Column="1" Width="24"/>
+                                <Slider x:Name="SliderOpacity" Grid.Column="2" Minimum="10" Maximum="100" Value="100" ValueChanged="Slider_ValueChanged" />
+                                <Border Grid.Column="3" Width="32"/>
+                                <TextBlock x:Name="LblOpacity" Grid.Column="4" Text="{Binding Value, ElementName=SliderOpacity, StringFormat={}{0:0}%}" Style="{StaticResource ValueLabel}"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
 
-                    <!-- DIVIDER -->
-                    <Rectangle Height="1" Fill="#23252B" Margin="0,8"/>
+                    <!-- CARD 2: OUTLINE & CONTRAST -->
+                    <Border Background="#16171C" BorderBrush="#252732" BorderThickness="1" CornerRadius="8" Padding="16,14" Margin="0,0,0,12">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="CONTRAST OUTLINE" Style="{StaticResource SectionHeading}" Margin="0"/>
+                                <CheckBox x:Name="ChkHasOutline" Grid.Column="1" Content="Enable Outline"
+                                          IsChecked="True" Checked="ChkHasOutline_Changed" Unchecked="ChkHasOutline_Changed"/>
+                            </Grid>
 
-                    <!-- SECTION 2: OUTLINE & CONTRAST -->
-                    <Grid Margin="0,0,0,4">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="CONTRAST OUTLINE" Style="{StaticResource SectionHeading}" Margin="0"/>
-                        <CheckBox x:Name="ChkHasOutline" Grid.Column="1" Content="Enable" Foreground="#C2C7D0" FontSize="11"
-                                  IsChecked="True" Checked="ChkHasOutline_Changed" Unchecked="ChkHasOutline_Changed" Cursor="Hand"/>
-                    </Grid>
+                            <Grid Margin="0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="105" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="48" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Outline Width" Style="{StaticResource SettingLabel}" ToolTip="Dark outer boundary for contrast against bright surfaces"/>
+                                <Button Grid.Column="1" Style="{StaticResource SmallStepButton}" Content="-" Click="BtnOutlineMinus_Click" Margin="0,0,8,0" ToolTip="Decrease outline by 0.5px"/>
+                                <Slider x:Name="SliderOutlineThickness" Grid.Column="2" Minimum="0.5" Maximum="4" Value="1" ValueChanged="Slider_ValueChanged" />
+                                <Button Grid.Column="3" Style="{StaticResource SmallStepButton}" Content="+" Click="BtnOutlinePlus_Click" Margin="8,0,8,0" ToolTip="Increase outline by 0.5px"/>
+                                <TextBlock x:Name="LblOutlineThickness" Grid.Column="4" Text="{Binding Value, ElementName=SliderOutlineThickness, StringFormat={}{0:0.0}px}" Style="{StaticResource ValueLabel}"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
 
-                    <Grid Margin="0,3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="105" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="48" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Outline Width" Style="{StaticResource SettingLabel}" ToolTip="Dark outer boundary for contrast against bright surfaces"/>
-                        <Button Grid.Column="1" Style="{StaticResource SmallStepButton}" Content="-" Click="BtnOutlineMinus_Click" Margin="0,0,6,0" ToolTip="Decrease outline by 0.5px"/>
-                        <Slider x:Name="SliderOutlineThickness" Grid.Column="2" Minimum="0.5" Maximum="4" Value="1" ValueChanged="Slider_ValueChanged" />
-                        <Button Grid.Column="3" Style="{StaticResource SmallStepButton}" Content="+" Click="BtnOutlinePlus_Click" Margin="6,0,6,0" ToolTip="Increase outline by 0.5px"/>
-                        <TextBlock x:Name="LblOutlineThickness" Grid.Column="4" Text="{Binding Value, ElementName=SliderOutlineThickness, StringFormat={}{0:0.0}px}" Style="{StaticResource ValueLabel}"/>
-                    </Grid>
+                    <!-- CARD 3: CALIBRATION / OFFSET -->
+                    <Border Background="#16171C" BorderBrush="#252732" BorderThickness="1" CornerRadius="8" Padding="16,14" Margin="0,0,0,12">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="SCREEN CALIBRATION &amp; OFFSET" Style="{StaticResource SectionHeading}" Margin="0"/>
+                                <Button x:Name="BtnResetOffset" Grid.Column="1" Style="{StaticResource RoundedButtonStyle}" Content="Center (0,0)" Click="BtnResetOffset_Click"
+                                        Padding="10,3" FontSize="11" Background="#1D2028" Foreground="#10B981" BorderBrush="#2B2E38" BorderThickness="1" ToolTip="Reset offset back to exact screen center"/>
+                            </Grid>
 
-                    <!-- DIVIDER -->
-                    <Rectangle Height="1" Fill="#23252B" Margin="0,8"/>
+                            <Grid Margin="0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="105" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="48" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Offset X" Style="{StaticResource SettingLabel}" ToolTip="Nudge horizontally"/>
+                                <Button Grid.Column="1" Style="{StaticResource SmallStepButton}" Content="-" Click="BtnOffsetXMinus_Click" Margin="0,0,8,0"/>
+                                <Slider x:Name="SliderOffsetX" Grid.Column="2" Minimum="-100" Maximum="100" Value="0" ValueChanged="Slider_ValueChanged" />
+                                <Button Grid.Column="3" Style="{StaticResource SmallStepButton}" Content="+" Click="BtnOffsetXPlus_Click" Margin="8,0,8,0"/>
+                                <TextBlock x:Name="LblOffsetX" Grid.Column="4" Text="{Binding Value, ElementName=SliderOffsetX, StringFormat={}{0:0}px}" Style="{StaticResource ValueLabel}"/>
+                            </Grid>
 
-                    <!-- SECTION 3: CALIBRATION / OFFSET -->
-                    <Grid Margin="0,0,0,4">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="ALIGNMENT / OFFSET" Style="{StaticResource SectionHeading}" Margin="0"/>
-                        <Button x:Name="BtnResetOffset" Grid.Column="1" Style="{StaticResource RoundedButtonStyle}" Content="Center (0,0)" Click="BtnResetOffset_Click"
-                                Padding="8,2" FontSize="10.5" Background="#202227" Foreground="#10B981" BorderBrush="#2D3038" BorderThickness="1" ToolTip="Reset offset back to exact screen center"/>
-                    </Grid>
+                            <Grid Margin="0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="105" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="48" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Offset Y" Style="{StaticResource SettingLabel}" ToolTip="Nudge vertically"/>
+                                <Button Grid.Column="1" Style="{StaticResource SmallStepButton}" Content="-" Click="BtnOffsetYMinus_Click" Margin="0,0,8,0"/>
+                                <Slider x:Name="SliderOffsetY" Grid.Column="2" Minimum="-100" Maximum="100" Value="0" ValueChanged="Slider_ValueChanged" />
+                                <Button Grid.Column="3" Style="{StaticResource SmallStepButton}" Content="+" Click="BtnOffsetYPlus_Click" Margin="8,0,8,0"/>
+                                <TextBlock x:Name="LblOffsetY" Grid.Column="4" Text="{Binding Value, ElementName=SliderOffsetY, StringFormat={}{0:0}px}" Style="{StaticResource ValueLabel}"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
 
-                    <Grid Margin="0,2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="105" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="48" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Offset X" Style="{StaticResource SettingLabel}" ToolTip="Nudge horizontally"/>
-                        <Button Grid.Column="1" Style="{StaticResource SmallStepButton}" Content="-" Click="BtnOffsetXMinus_Click" Margin="0,0,6,0"/>
-                        <Slider x:Name="SliderOffsetX" Grid.Column="2" Minimum="-100" Maximum="100" Value="0" ValueChanged="Slider_ValueChanged" />
-                        <Button Grid.Column="3" Style="{StaticResource SmallStepButton}" Content="+" Click="BtnOffsetXPlus_Click" Margin="6,0,6,0"/>
-                        <TextBlock x:Name="LblOffsetX" Grid.Column="4" Text="{Binding Value, ElementName=SliderOffsetX, StringFormat={}{0:0}px}" Style="{StaticResource ValueLabel}"/>
-                    </Grid>
-
-                    <Grid Margin="0,2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="105" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="48" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Offset Y" Style="{StaticResource SettingLabel}" ToolTip="Nudge vertically"/>
-                        <Button Grid.Column="1" Style="{StaticResource SmallStepButton}" Content="-" Click="BtnOffsetYMinus_Click" Margin="0,0,6,0"/>
-                        <Slider x:Name="SliderOffsetY" Grid.Column="2" Minimum="-100" Maximum="100" Value="0" ValueChanged="Slider_ValueChanged" />
-                        <Button Grid.Column="3" Style="{StaticResource SmallStepButton}" Content="+" Click="BtnOffsetYPlus_Click" Margin="6,0,6,0"/>
-                        <TextBlock x:Name="LblOffsetY" Grid.Column="4" Text="{Binding Value, ElementName=SliderOffsetY, StringFormat={}{0:0}px}" Style="{StaticResource ValueLabel}"/>
-                    </Grid>
-
-                    <!-- DIVIDER -->
-                    <Rectangle Height="1" Fill="#23252B" Margin="0,8"/>
-
-                    <!-- SECTION 4: IN-GAME SHORTCUT STRIP -->
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Border Grid.Column="0" Background="#141519" CornerRadius="4" Padding="8,5" Margin="0,0,3,0">
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <TextBlock Text="F10" FontSize="11" FontWeight="Bold" Foreground="#10B981" Margin="0,0,6,0"/>
-                                <TextBlock Text="Toggle" FontSize="10.5" Foreground="{StaticResource TextMuted}"/>
-                            </StackPanel>
-                        </Border>
-                        <Border Grid.Column="1" Background="#141519" CornerRadius="4" Padding="8,5" Margin="3,0,3,0">
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <TextBlock Text="F9" FontSize="11" FontWeight="Bold" Foreground="#EDEDED" Margin="0,0,6,0"/>
-                                <TextBlock Text="Menu" FontSize="10.5" Foreground="{StaticResource TextMuted}"/>
-                            </StackPanel>
-                        </Border>
-                        <Border Grid.Column="2" Background="#141519" CornerRadius="4" Padding="8,5" Margin="3,0,0,0">
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <TextBlock Text="PgUp/Dn" FontSize="11" FontWeight="Bold" Foreground="#EDEDED" Margin="0,0,6,0"/>
-                                <TextBlock Text="Cycle" FontSize="10.5" Foreground="{StaticResource TextMuted}"/>
-                            </StackPanel>
-                        </Border>
-                    </Grid>
+                    <!-- CARD 4: IN-GAME SHORTCUT STRIP -->
+                    <Border Background="#16171C" BorderBrush="#252732" BorderThickness="1" CornerRadius="8" Padding="14,10" Margin="0,0,0,4">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Background="#111216" CornerRadius="5" Padding="10,6" Margin="0,0,4,0">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="F10" FontSize="11.5" FontWeight="Bold" Foreground="#10B981" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Toggle Overlay" FontSize="10.5" Foreground="{StaticResource TextMuted}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="1" Background="#111216" CornerRadius="5" Padding="10,6" Margin="4,0,4,0">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="F9" FontSize="11.5" FontWeight="Bold" Foreground="#EDEDED" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Settings Menu" FontSize="10.5" Foreground="{StaticResource TextMuted}"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="2" Background="#111216" CornerRadius="5" Padding="10,6" Margin="4,0,0,0">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="PgUp/Dn" FontSize="11.5" FontWeight="Bold" Foreground="#EDEDED" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Cycle Reticle" FontSize="10.5" Foreground="{StaticResource TextMuted}"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Border>
 
                 </StackPanel>
-            </Border>
+            </ScrollViewer>
         </Grid>
 
         <!-- VIEW 2: ABOUT & CONTACT VIEW (Clean 2-Panel Architecture) -->
-        <Grid x:Name="AboutView" Grid.Row="1" Margin="14,12,14,10" Visibility="Collapsed">
+        <Grid x:Name="AboutView" Grid.Row="1" Margin="16,14,16,12" Visibility="Collapsed">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="310" />
-                <ColumnDefinition Width="12" />
+                <ColumnDefinition Width="320" />
+                <ColumnDefinition Width="14" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
             <!-- LEFT PANEL: Contact & Direct Feedback Form -->
-            <Border Grid.Column="0" Background="#18191E" BorderBrush="#262830" BorderThickness="1" CornerRadius="6" Padding="14">
+            <Border Grid.Column="0" Background="#16171C" BorderBrush="#252732" BorderThickness="1" CornerRadius="8" Padding="16,14">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -667,7 +762,7 @@
                     <!-- Contact Details -->
                     <StackPanel Grid.Row="0">
                         <TextBlock Text="CONTACT DEVELOPER" Style="{StaticResource SectionHeading}"/>
-                        <Border Background="#131417" CornerRadius="4" Padding="8,6" Margin="0,0,0,6" BorderBrush="#23252B" BorderThickness="1">
+                        <Border Background="#101114" CornerRadius="5" Padding="10,8" Margin="0,0,0,8" BorderBrush="#23252E" BorderThickness="1">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -678,11 +773,11 @@
                                     <TextBlock Text="keefastudys@gmail.com" FontSize="11" FontWeight="SemiBold" Foreground="#EDEDED"/>
                                 </StackPanel>
                                 <Button Grid.Column="1" Style="{StaticResource RoundedButtonStyle}" Content="Copy" Click="BtnCopyEmail_Click"
-                                        Padding="7,3" FontSize="10.5" Background="#1E2026" Foreground="#10B981" BorderBrush="#2E3038" BorderThickness="1" ToolTip="Copy email address"/>
+                                        Padding="8,4" FontSize="10.5" Background="#1B1D24" Foreground="#10B981" BorderBrush="#2C2F3A" BorderThickness="1" ToolTip="Copy email address"/>
                             </Grid>
                         </Border>
 
-                        <Border Background="#131417" CornerRadius="4" Padding="8,6" Margin="0,0,0,2" BorderBrush="#23252B" BorderThickness="1">
+                        <Border Background="#101114" CornerRadius="5" Padding="10,8" Margin="0,0,0,2" BorderBrush="#23252E" BorderThickness="1">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -693,45 +788,45 @@
                                     <TextBlock Text="github.com/keefalegends" FontSize="11" FontWeight="SemiBold" Foreground="#EDEDED"/>
                                 </StackPanel>
                                 <Button Grid.Column="1" Style="{StaticResource RoundedButtonStyle}" Content="Open" Click="BtnOpenProfile_Click"
-                                        Padding="7,3" FontSize="10.5" Background="#1E2026" Foreground="#EDEDED" BorderBrush="#2E3038" BorderThickness="1" ToolTip="Visit GitHub Profile"/>
+                                        Padding="8,4" FontSize="10.5" Background="#1B1D24" Foreground="#EDEDED" BorderBrush="#2C2F3A" BorderThickness="1" ToolTip="Visit GitHub Profile"/>
                             </Grid>
                         </Border>
                     </StackPanel>
 
                     <!-- Divider -->
-                    <Rectangle Grid.Row="1" Height="1" Fill="#23252B" Margin="0,10"/>
+                    <Rectangle Grid.Row="1" Height="1" Fill="#23252E" Margin="0,12"/>
 
                     <!-- Feedback Form -->
                     <StackPanel Grid.Row="2">
                         <TextBlock Text="DIRECT FEEDBACK &amp; REQUEST" Style="{StaticResource SectionHeading}"/>
-                        <ComboBox x:Name="CmbFeedbackType" Height="28" Margin="0,0,0,8">
+                        <ComboBox x:Name="CmbFeedbackType" Height="30" Margin="0,0,0,8">
                             <ComboBoxItem Content="💡  Feature Request" IsSelected="True" />
                             <ComboBoxItem Content="🎯  New Reticle Shape" />
                             <ComboBoxItem Content="🐛  Bug Report" />
                             <ComboBoxItem Content="💬  General Feedback" />
                         </ComboBox>
 
-                        <TextBox x:Name="TxtFeedback" Height="90" Background="#131417" Foreground="#EDEDED" BorderBrush="#282B33"
+                        <TextBox x:Name="TxtFeedback" Height="95" Background="#101114" Foreground="#EDEDED" BorderBrush="#262832"
                                  TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"
                                  Padding="8,6" FontSize="11" FontFamily="Segoe UI" Margin="0,0,0,10"/>
 
                         <Button Style="{StaticResource RoundedButtonStyle}" Click="BtnSendGithubIssue_Click"
-                                Background="#10B981" Foreground="#0E1013" BorderThickness="0" Padding="10,7" Margin="0,0,0,6">
-                            <TextBlock Text="🚀  Submit GitHub Issue" FontWeight="Bold" FontSize="11"/>
+                                Background="#10B981" Foreground="#0E1013" BorderThickness="0" Padding="10,8" Margin="0,0,0,8">
+                            <TextBlock Text="🚀  Submit GitHub Issue" FontWeight="Bold" FontSize="11.5"/>
                         </Button>
 
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="6" />
+                                <ColumnDefinition Width="8" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Button Grid.Column="0" Style="{StaticResource RoundedButtonStyle}" Click="BtnSendEmail_Click"
-                                    Background="#1E2026" Foreground="#EDEDED" BorderBrush="#2E3038" BorderThickness="1" Padding="6,5" ToolTip="Open in Gmail Web Compose">
+                                    Background="#1B1D24" Foreground="#EDEDED" BorderBrush="#2C2F3A" BorderThickness="1" Padding="6,6" ToolTip="Open in Gmail Web Compose">
                                 <TextBlock Text="✉️  Via Gmail" FontSize="10.5" FontWeight="SemiBold"/>
                             </Button>
                             <Button Grid.Column="2" Style="{StaticResource RoundedButtonStyle}" Click="BtnCopyFeedback_Click"
-                                    Background="#1E2026" Foreground="#9CA3AF" BorderBrush="#2E3038" BorderThickness="1" Padding="6,5" ToolTip="Copy feedback to clipboard">
+                                    Background="#1B1D24" Foreground="#9CA3AF" BorderBrush="#2C2F3A" BorderThickness="1" Padding="6,6" ToolTip="Copy feedback to clipboard">
                                 <TextBlock Text="📋  Copy Text" FontSize="10.5" FontWeight="SemiBold"/>
                             </Button>
                         </Grid>
@@ -740,39 +835,39 @@
             </Border>
 
             <!-- RIGHT PANEL: Creator Profile, Specs & Architecture -->
-            <Border Grid.Column="2" Background="#18191E" BorderBrush="#262830" BorderThickness="1" CornerRadius="6" Padding="18,14">
-                <StackPanel VerticalAlignment="Center">
+            <Border Grid.Column="2" Background="#16171C" BorderBrush="#252732" BorderThickness="1" CornerRadius="8" Padding="20,16">
+                <StackPanel VerticalAlignment="Top">
                     <!-- Profile Card -->
-                    <Grid Margin="0,0,0,12">
+                    <Grid Margin="0,0,0,14">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Border Grid.Column="0" Width="44" Height="44" CornerRadius="22" Background="#132B22"
+                        <Border Grid.Column="0" Width="48" Height="48" CornerRadius="24" Background="#132B22"
                                 BorderBrush="#10B981" BorderThickness="1.5" Margin="0,0,14,0">
-                            <TextBlock Text="🎯" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="🎯" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="KeefaLegends" FontSize="16" FontWeight="Bold" Foreground="#EDEDED"/>
-                                <Border Background="#132B22" CornerRadius="3" Padding="5,1" Margin="8,0,0,0">
+                                <TextBlock Text="KeefaLegends" FontSize="16.5" FontWeight="Bold" Foreground="#EDEDED"/>
+                                <Border Background="#132B22" CornerRadius="4" Padding="6,2" Margin="8,0,0,0">
                                     <TextBlock Text="AUTHOR" FontSize="9" FontWeight="Bold" Foreground="#10B981" VerticalAlignment="Center"/>
                                 </Border>
                             </StackPanel>
-                            <TextBlock Text="Software Engineer • Creator of Crosshair Overlay" FontSize="11.5" Foreground="{StaticResource TextSecondary}" Margin="0,1,0,0"/>
+                            <TextBlock Text="Software Engineer • Creator of Crosshair Overlay" FontSize="11.5" Foreground="{StaticResource TextSecondary}" Margin="0,2,0,0"/>
                         </StackPanel>
                         <Button Grid.Column="2" Style="{StaticResource RoundedButtonStyle}" Click="BtnOpenGithub_Click"
-                                Background="#1E2026" BorderBrush="#2E3038" BorderThickness="1" Padding="12,6" VerticalAlignment="Center">
+                                Background="#1B1D24" BorderBrush="#2C2F3A" BorderThickness="1" Padding="14,7" VerticalAlignment="Center">
                             <TextBlock Text="★  GitHub" FontSize="11" FontWeight="SemiBold" Foreground="#EDEDED"/>
                         </Button>
                     </Grid>
 
-                    <Rectangle Height="1" Fill="#23252B" Margin="0,0,0,12"/>
+                    <Rectangle Height="1" Fill="#23252E" Margin="0,0,0,14"/>
 
                     <!-- Highlights Grid (2x2) -->
                     <TextBlock Text="ENGINEERING ARCHITECTURE" Style="{StaticResource SectionHeading}"/>
-                    <Grid Margin="0,0,0,10">
+                    <Grid Margin="0,0,0,12">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
@@ -782,40 +877,40 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <Border Grid.Row="0" Grid.Column="0" Background="#131417" CornerRadius="4" Padding="10" Margin="0,0,4,8" BorderBrush="#23252B" BorderThickness="1">
+                        <Border Grid.Row="0" Grid.Column="0" Background="#101114" CornerRadius="6" Padding="12" Margin="0,0,6,10" BorderBrush="#23252E" BorderThickness="1">
                             <StackPanel>
                                 <TextBlock Text="🛡️  Anti-Cheat Compliant" FontSize="11.5" FontWeight="Bold" Foreground="#10B981"/>
                                 <TextBlock Text="Pure top-level transparent DWM layer. No DLL injection or memory hook."
-                                           FontSize="10.5" Foreground="{StaticResource TextMuted}" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                                           FontSize="10.5" Foreground="{StaticResource TextMuted}" Margin="0,3,0,0" TextWrapping="Wrap"/>
                             </StackPanel>
                         </Border>
 
-                        <Border Grid.Row="0" Grid.Column="1" Background="#131417" CornerRadius="4" Padding="10" Margin="4,0,0,8" BorderBrush="#23252B" BorderThickness="1">
+                        <Border Grid.Row="0" Grid.Column="1" Background="#101114" CornerRadius="6" Padding="12" Margin="6,0,0,10" BorderBrush="#23252E" BorderThickness="1">
                             <StackPanel>
                                 <TextBlock Text="🖱️  Zero Input Latency" FontSize="11.5" FontWeight="Bold" Foreground="#EDEDED"/>
                                 <TextBlock Text="Native Win32 WS_EX_TRANSPARENT pass-through with no mouse click lag."
-                                           FontSize="10.5" Foreground="{StaticResource TextMuted}" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                                           FontSize="10.5" Foreground="{StaticResource TextMuted}" Margin="0,3,0,0" TextWrapping="Wrap"/>
                             </StackPanel>
                         </Border>
 
-                        <Border Grid.Row="1" Grid.Column="0" Background="#131417" CornerRadius="4" Padding="10" Margin="0,0,4,0" BorderBrush="#23252B" BorderThickness="1">
+                        <Border Grid.Row="1" Grid.Column="0" Background="#101114" CornerRadius="6" Padding="12" Margin="0,0,6,0" BorderBrush="#23252E" BorderThickness="1">
                             <StackPanel>
                                 <TextBlock Text="⚡  DirectX Accelerated" FontSize="11.5" FontWeight="Bold" Foreground="#EDEDED"/>
                                 <TextBlock Text="Vector reticle renderer with sub-1% CPU and GPU frame overhead."
-                                           FontSize="10.5" Foreground="{StaticResource TextMuted}" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                                           FontSize="10.5" Foreground="{StaticResource TextMuted}" Margin="0,3,0,0" TextWrapping="Wrap"/>
                             </StackPanel>
                         </Border>
 
-                        <Border Grid.Row="1" Grid.Column="1" Background="#131417" CornerRadius="4" Padding="10" Margin="4,0,0,0" BorderBrush="#23252B" BorderThickness="1">
+                        <Border Grid.Row="1" Grid.Column="1" Background="#101114" CornerRadius="6" Padding="12" Margin="6,0,0,0" BorderBrush="#23252E" BorderThickness="1">
                             <StackPanel>
                                 <TextBlock Text="🎯  Pixel-Perfect Calibration" FontSize="11.5" FontWeight="Bold" Foreground="#10B981"/>
                                 <TextBlock Text="8 vector shapes with discrete single-pixel nudge offsets."
-                                           FontSize="10.5" Foreground="{StaticResource TextMuted}" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                                           FontSize="10.5" Foreground="{StaticResource TextMuted}" Margin="0,3,0,0" TextWrapping="Wrap"/>
                             </StackPanel>
                         </Border>
                     </Grid>
 
-                    <Rectangle Height="1" Fill="#23252B" Margin="0,6,0,10"/>
+                    <Rectangle Height="1" Fill="#23252E" Margin="0,6,0,12"/>
 
                     <TextBlock Text="Built with C# .NET WPF • Open Source on GitHub under MIT License"
                                HorizontalAlignment="Center" FontSize="10.5" Foreground="{StaticResource TextMuted}"/>
@@ -824,7 +919,7 @@
         </Grid>
 
         <!-- BOTTOM ACTION FOOTER -->
-        <Border Grid.Row="2" Background="#141519" BorderBrush="#22242A" BorderThickness="0,1,0,0" Padding="14,0">
+        <Border Grid.Row="2" Background="#14151A" BorderBrush="#22242E" BorderThickness="0,1,0,0" Padding="16,0">
             <Grid VerticalAlignment="Center">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -834,16 +929,16 @@
 
                 <!-- Left: Subtle Reset Button -->
                 <Button x:Name="BtnResetAll" Style="{StaticResource RoundedButtonStyle}" Content="↺  Reset Defaults" Click="BtnResetAll_Click"
-                        Padding="12,6" FontSize="11" Background="#1A1B20" Foreground="#9CA3AF" BorderBrush="#2B2D35" BorderThickness="1"
+                        Padding="14,7" FontSize="11" Background="#191B21" Foreground="#9CA3AF" BorderBrush="#282B36" BorderThickness="1"
                         ToolTip="Reset all geometry, colors, and offset back to factory defaults"/>
 
                 <!-- Right: Action Button Group -->
                 <StackPanel Grid.Column="2" Orientation="Horizontal">
                     <Button x:Name="BtnToggleVisibility" Style="{StaticResource RoundedButtonStyle}" Content="Toggle Overlay (F10)" Click="BtnToggleVisibility_Click"
-                            Padding="12,6" FontSize="11" FontWeight="SemiBold" Background="#1E2026" Foreground="#EDEDED" BorderBrush="#2E3038" BorderThickness="1" Margin="0,0,8,0"
+                            Padding="14,7" FontSize="11" FontWeight="SemiBold" Background="#1B1D24" Foreground="#EDEDED" BorderBrush="#2C2F3A" BorderThickness="1" Margin="0,0,10,0"
                             ToolTip="Show or hide the in-game crosshair (F10)"/>
                     <Button x:Name="BtnMinimizeGame" Style="{StaticResource RoundedButtonStyle}" Content="Play Game (F9)" Click="BtnHideToTray_Click"
-                            Padding="16,6" FontSize="11" FontWeight="Bold" Background="#10B981" Foreground="#0E1013" BorderThickness="0"
+                            Padding="18,7" FontSize="11.5" FontWeight="Bold" Background="#10B981" Foreground="#0E1013" BorderThickness="0"
                             ToolTip="Hide this window and start playing (press F9 anytime to bring back settings)"/>
                 </StackPanel>
             </Grid>
