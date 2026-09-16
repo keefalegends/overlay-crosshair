@@ -710,8 +710,8 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <Button Grid.Column="0" Style="{StaticResource RoundedButtonStyle}" Click="BtnSendEmail_Click"
-                                            Background="#222732" Foreground="#00F0FF" BorderBrush="#353E4E" BorderThickness="1" Padding="8,6" ToolTip="Kirim via aplikasi email default">
-                                        <TextBlock Text="✉️  Via Email" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                            Background="#222732" Foreground="#00F0FF" BorderBrush="#353E4E" BorderThickness="1" Padding="8,6" ToolTip="Buka form kirim pesan langsung di Gmail Web (keefastudys@gmail.com)">
+                                        <TextBlock Text="✉️  Via Gmail" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                     </Button>
                                     <Button Grid.Column="2" Style="{StaticResource RoundedButtonStyle}" Click="BtnCopyFeedback_Click"
                                             Background="#222732" Foreground="#E2E8F0" BorderBrush="#353E4E" BorderThickness="1" Padding="8,6" ToolTip="Salin pesan ke clipboard">

@@ -446,19 +446,35 @@ namespace CrosshairOverlay.Views
 
             try
             {
+                // Copy text to clipboard as safety backup
+                Clipboard.SetText(feedback);
+
                 string subject = Uri.EscapeDataString($"[Crosshair Overlay] {category.Trim()}");
                 string body = Uri.EscapeDataString($"Kategori: {category.Trim()}\n\nMasukan:\n{feedback}\n\n---\nDikirim dari Crosshair Overlay v1.0.0");
-                string mailto = $"mailto:keefastudys@gmail.com?subject={subject}&body={body}";
+                
+                // Direct Gmail web compose link (works in all modern browsers without blank tab issue)
+                string gmailUrl = $"https://mail.google.com/mail/?view=cm&fs=1&to=keefastudys@gmail.com&su={subject}&body={body}";
 
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = mailto,
+                    FileName = gmailUrl,
                     UseShellExecute = true
                 });
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Tidak dapat membuka email client: {ex.Message}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                // Fallback to standard mailto if web URL fails
+                try
+                {
+                    string subject = Uri.EscapeDataString($"[Crosshair Overlay] {category.Trim()}");
+                    string body = Uri.EscapeDataString(feedback);
+                    string mailto = $"mailto:keefastudys@gmail.com?subject={subject}&body={body}";
+                    Process.Start(new ProcessStartInfo { FileName = mailto, UseShellExecute = true });
+                }
+                catch
+                {
+                    MessageBox.Show($"Tidak dapat membuka browser/email: {ex.Message}\n\nPesan sudah otomatis disalin ke clipboard.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
         }
 
