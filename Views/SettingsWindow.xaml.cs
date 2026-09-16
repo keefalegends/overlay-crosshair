@@ -375,6 +375,113 @@ namespace CrosshairOverlay.Views
             }
         }
 
+        private void BtnCopyEmail_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Clipboard.SetText("keefayoura3@gmail.com");
+                MessageBox.Show("Alamat email 'keefayoura3@gmail.com' berhasil disalin ke clipboard!", "Email Disalin", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Gagal menyalin email: {ex.Message}", "Info", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void BtnOpenProfile_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "https://github.com/keefalegends",
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Tidak dapat membuka browser: {ex.Message}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void BtnSendGithubIssue_Click(object sender, RoutedEventArgs e)
+        {
+            string category = (CmbFeedbackType.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Feedback";
+            string feedback = TxtFeedback.Text.Trim();
+
+            if (string.IsNullOrEmpty(feedback))
+            {
+                MessageBox.Show("Silakan tulis pesan atau masukanmu terlebih dahulu!", "Pesan Kosong", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            try
+            {
+                string title = Uri.EscapeDataString($"[{category.Trim()}] Feedback dari Pengguna");
+                string body = Uri.EscapeDataString($"### Kategori\n{category.Trim()}\n\n### Deskripsi / Masukan\n{feedback}\n\n---\n*Dikirim melalui Crosshair Overlay v1.0.0*");
+                string url = $"https://github.com/keefalegends/overlay-crosshair/issues/new?title={title}&body={body}";
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = url,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Tidak dapat membuka browser: {ex.Message}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void BtnSendEmail_Click(object sender, RoutedEventArgs e)
+        {
+            string category = (CmbFeedbackType.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Feedback";
+            string feedback = TxtFeedback.Text.Trim();
+
+            if (string.IsNullOrEmpty(feedback))
+            {
+                MessageBox.Show("Silakan tulis pesan atau masukanmu terlebih dahulu!", "Pesan Kosong", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            try
+            {
+                string subject = Uri.EscapeDataString($"[Crosshair Overlay] {category.Trim()}");
+                string body = Uri.EscapeDataString($"Kategori: {category.Trim()}\n\nMasukan:\n{feedback}\n\n---\nDikirim dari Crosshair Overlay v1.0.0");
+                string mailto = $"mailto:keefayoura3@gmail.com?subject={subject}&body={body}";
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = mailto,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Tidak dapat membuka email client: {ex.Message}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void BtnCopyFeedback_Click(object sender, RoutedEventArgs e)
+        {
+            string feedback = TxtFeedback.Text.Trim();
+            if (string.IsNullOrEmpty(feedback))
+            {
+                MessageBox.Show("Silakan tulis pesan terlebih dahulu sebelum menyalin!", "Pesan Kosong", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            try
+            {
+                Clipboard.SetText(feedback);
+                MessageBox.Show("Pesan masukan berhasil disalin ke clipboard!", "Tersalin", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Gagal menyalin: {ex.Message}", "Info", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);

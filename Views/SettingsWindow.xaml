@@ -619,154 +619,257 @@
             </ScrollViewer>
         </Grid>
 
-        <!-- ABOUT ME VIEW -->
-        <ScrollViewer x:Name="AboutView" Grid.Row="1" Margin="24,16,24,12" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
-            <StackPanel MaxWidth="680" HorizontalAlignment="Center">
+        <!-- ABOUT ME & CONTACT VIEW (2-COLUMN LAYOUT) -->
+        <Grid x:Name="AboutView" Grid.Row="1" Margin="16,14,16,10" Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="330" />
+                <ColumnDefinition Width="14" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-                <!-- Profile & App Header Card -->
-                <Border Style="{StaticResource CardStyle}" Padding="20">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+            <!-- LEFT COLUMN: Contact Developer & Feedback Form -->
+            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <!-- Developer Contact Card -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="CONTACT DEVELOPER" Style="{StaticResource SectionTitle}"/>
 
-                        <!-- Avatar / Icon -->
-                        <Border Grid.Column="0" Width="64" Height="64" CornerRadius="32" Background="#162A20"
-                                BorderBrush="#00FF66" BorderThickness="2" Margin="0,0,18,0">
-                            <TextBlock Text="🎯" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
+                            <!-- Email row -->
+                            <Border Background="#12151B" CornerRadius="6" Padding="10,8" Margin="0,0,0,8" BorderBrush="#252A34" BorderThickness="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="✉️" FontSize="15" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="Email Developer" FontSize="10" Foreground="{StaticResource TextMuted}"/>
+                                        <TextBlock Text="keefayoura3@gmail.com" FontSize="11" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                                    </StackPanel>
+                                    <Button Grid.Column="2" Style="{StaticResource RoundedButtonStyle}" Content="Salin" Click="BtnCopyEmail_Click"
+                                            Padding="8,3" FontSize="11" Background="#222732" Foreground="#00FF66" BorderThickness="0" ToolTip="Salin email ke clipboard"/>
+                                </Grid>
+                            </Border>
 
-                        <!-- Profile Info -->
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="KeefaLegends" FontSize="20" FontWeight="Bold" Foreground="#FFFFFF"/>
-                                <Border Background="#1C2E25" BorderBrush="#00FF66" BorderThickness="1" CornerRadius="4" Padding="6,2" Margin="10,0,0,0">
-                                    <TextBlock Text="CREATOR" FontSize="10" FontWeight="Bold" Foreground="#00FF66" VerticalAlignment="Center"/>
-                                </Border>
-                            </StackPanel>
-                            <TextBlock Text="Software Developer &amp; Gamer" FontSize="13" Foreground="#00F0FF" Margin="0,2,0,4"/>
-                            <TextBlock Text="Crosshair Overlay for PC Games — Precision Reticle for games without default crosshair."
-                                       FontSize="12" Foreground="{StaticResource TextMuted}" TextWrapping="Wrap"/>
+                            <!-- GitHub Profile row -->
+                            <Border Background="#12151B" CornerRadius="6" Padding="10,8" Margin="0,0,0,2" BorderBrush="#252A34" BorderThickness="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="🌐" FontSize="15" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="GitHub Profile" FontSize="10" Foreground="{StaticResource TextMuted}"/>
+                                        <TextBlock Text="github.com/keefalegends" FontSize="11" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                                    </StackPanel>
+                                    <Button Grid.Column="2" Style="{StaticResource RoundedButtonStyle}" Content="Buka" Click="BtnOpenProfile_Click"
+                                            Padding="8,3" FontSize="11" Background="#222732" Foreground="#00F0FF" BorderThickness="0" ToolTip="Kunjungi profil GitHub"/>
+                                </Grid>
+                            </Border>
                         </StackPanel>
+                    </Border>
 
-                        <!-- GitHub Button -->
-                        <Button Grid.Column="2" Style="{StaticResource RoundedButtonStyle}" Click="BtnOpenGithub_Click"
-                                Background="#252D3D" BorderBrush="#3D4B66" BorderThickness="1" Padding="14,10" VerticalAlignment="Center">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="★  GitHub Repo" FontSize="12" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                    <!-- Feedback & Suggestions Card -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="KIRIM MASUKAN &amp; SARAN" Style="{StaticResource SectionTitle}"/>
+                            <TextBlock Text="Punya ide bentuk crosshair baru, saran fitur, atau kendala bug saat main game? Tuliskan di sini:"
+                                       FontSize="11" Foreground="{StaticResource TextMuted}" TextWrapping="Wrap" Margin="0,0,0,10"/>
+
+                            <!-- Category Selector -->
+                            <TextBlock Text="Kategori Masukan:" FontSize="11" Foreground="{StaticResource TextLight}" Margin="0,0,0,4"/>
+                            <ComboBox x:Name="CmbFeedbackType" Height="34" Margin="0,0,0,10">
+                                <ComboBoxItem Content="💡   Saran Fitur Baru" IsSelected="True" />
+                                <ComboBoxItem Content="🎯   Request Bentuk Crosshair" />
+                                <ComboBoxItem Content="🐛   Lapor Bug / Kendala" />
+                                <ComboBoxItem Content="💬   Pertanyaan / Feedback Umum" />
+                            </ComboBox>
+
+                            <!-- Feedback Message Box -->
+                            <TextBlock Text="Pesan / Saran:" FontSize="11" Foreground="{StaticResource TextLight}" Margin="0,0,0,4"/>
+                            <TextBox x:Name="TxtFeedback" Height="90" Background="#14171E" Foreground="#FFFFFF" BorderBrush="#363E4E"
+                                     TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"
+                                     Padding="8,6" FontSize="11" FontFamily="Segoe UI" Margin="0,0,0,12"/>
+
+                            <!-- Action Buttons -->
+                            <StackPanel Margin="0,0,0,2">
+                                <Button Style="{StaticResource RoundedButtonStyle}" Click="BtnSendGithubIssue_Click"
+                                        Background="#00FF66" Foreground="#0F1115" BorderThickness="0" Padding="12,7" Margin="0,0,0,6" ToolTip="Buka form issue di GitHub dengan teks ini">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <TextBlock Text="🚀  Kirim via GitHub Issue" FontWeight="Bold" FontSize="11"/>
+                                    </StackPanel>
+                                </Button>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="8" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="0" Style="{StaticResource RoundedButtonStyle}" Click="BtnSendEmail_Click"
+                                            Background="#222732" Foreground="#00F0FF" BorderBrush="#353E4E" BorderThickness="1" Padding="8,6" ToolTip="Kirim via aplikasi email default">
+                                        <TextBlock Text="✉️  Via Email" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                    </Button>
+                                    <Button Grid.Column="2" Style="{StaticResource RoundedButtonStyle}" Click="BtnCopyFeedback_Click"
+                                            Background="#222732" Foreground="#E2E8F0" BorderBrush="#353E4E" BorderThickness="1" Padding="8,6" ToolTip="Salin pesan ke clipboard">
+                                        <TextBlock Text="📋  Salin Teks" FontSize="11" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                    </Button>
+                                </Grid>
                             </StackPanel>
-                        </Button>
-                    </Grid>
-                </Border>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
 
-                <!-- About Project Details Card -->
-                <Border Style="{StaticResource CardStyle}">
-                    <StackPanel>
-                        <TextBlock Text="TENTANG APLIKASI" Style="{StaticResource SectionTitle}"/>
-                        <TextBlock Text="Crosshair Overlay adalah utility gaming ringan untuk Windows yang menampilkan titik bidik (reticle) virtual di layar. Sangat cocok digunakan untuk game hardcore FPS, simulasi militer, senjata sniper tanpa scope/hip-fire, atau game apa pun yang belum menyediakan crosshair bawaan."
-                                   FontSize="12" Foreground="{StaticResource TextLight}" TextWrapping="Wrap" Margin="0,0,0,14"/>
-
-                        <!-- Highlights Grid (2x2) -->
-                        <Grid Margin="0,4">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
-                            <!-- Item 1: Anti-Cheat Safe -->
-                            <Border Grid.Row="0" Grid.Column="0" Background="#12151B" CornerRadius="6" Padding="12" Margin="0,0,6,8" BorderBrush="#252A34" BorderThickness="1">
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
-                                        <TextBlock Text="🛡️" FontSize="14" Margin="0,0,6,0"/>
-                                        <TextBlock Text="Anti-Cheat Safe" FontSize="13" FontWeight="Bold" Foreground="#00FF66"/>
-                                    </StackPanel>
-                                    <TextBlock Text="100% aman! Tidak melakukan DLL injection atau memory hook. Murni jendela Windows transparan biasa."
-                                               FontSize="11" Foreground="{StaticResource TextMuted}" TextWrapping="Wrap"/>
-                                </StackPanel>
-                            </Border>
-
-                            <!-- Item 2: Click-Through -->
-                            <Border Grid.Row="0" Grid.Column="1" Background="#12151B" CornerRadius="6" Padding="12" Margin="6,0,0,8" BorderBrush="#252A34" BorderThickness="1">
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
-                                        <TextBlock Text="🖱️" FontSize="14" Margin="0,0,6,0"/>
-                                        <TextBlock Text="Zero Input Lag" FontSize="13" FontWeight="Bold" Foreground="#00F0FF"/>
-                                    </StackPanel>
-                                    <TextBlock Text="Semua klik mouse dan tombol keyboard langsung menembus ke game tanpa jeda (WS_EX_TRANSPARENT)."
-                                               FontSize="11" Foreground="{StaticResource TextMuted}" TextWrapping="Wrap"/>
-                                </StackPanel>
-                            </Border>
-
-                            <!-- Item 3: Hardware Accelerated -->
-                            <Border Grid.Row="1" Grid.Column="0" Background="#12151B" CornerRadius="6" Padding="12" Margin="0,0,6,0" BorderBrush="#252A34" BorderThickness="1">
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
-                                        <TextBlock Text="⚡" FontSize="14" Margin="0,0,6,0"/>
-                                        <TextBlock Text="Performa Ringan" FontSize="13" FontWeight="Bold" Foreground="#FFE600"/>
-                                    </StackPanel>
-                                    <TextBlock Text="Ditenagai C# WPF hardware-accelerated (DirectX). Penggunaan CPU &amp; RAM mendekati 0%."
-                                               FontSize="11" Foreground="{StaticResource TextMuted}" TextWrapping="Wrap"/>
-                                </StackPanel>
-                            </Border>
-
-                            <!-- Item 4: Kustomisasi Lengkap -->
-                            <Border Grid.Row="1" Grid.Column="1" Background="#12151B" CornerRadius="6" Padding="12" Margin="6,0,0,0" BorderBrush="#252A34" BorderThickness="1">
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
-                                        <TextBlock Text="🎯" FontSize="14" Margin="0,0,6,0"/>
-                                        <TextBlock Text="8 Gaya &amp; Kalibrasi" FontSize="13" FontWeight="Bold" Foreground="#BF5AF2"/>
-                                    </StackPanel>
-                                    <TextBlock Text="Classic, Dot, T-Shape, Circle, Chevron, Box dengan outline kontras dan kalibrasi pixel Offset X &amp; Y."
-                                               FontSize="11" Foreground="{StaticResource TextMuted}" TextWrapping="Wrap"/>
-                                </StackPanel>
-                            </Border>
-                        </Grid>
-                    </StackPanel>
-                </Border>
-
-                <!-- Quick Hotkeys Reminder Card -->
-                <Border Style="{StaticResource CardStyle}">
-                    <StackPanel>
-                        <TextBlock Text="SHORTCUT IN-GAME" Style="{StaticResource SectionTitle}"/>
+            <!-- RIGHT COLUMN: Profile, About App & Tech Highlights -->
+            <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <!-- Profile & App Header Card -->
+                    <Border Style="{StaticResource CardStyle}" Padding="16">
                         <Grid>
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <Border Grid.Column="0" Background="#12151B" CornerRadius="6" Padding="10,8" Margin="0,0,4,0" BorderBrush="#252A34" BorderThickness="1">
-                                <StackPanel>
-                                    <TextBlock Text="F10" FontSize="14" FontWeight="Bold" Foreground="#00FF66"/>
-                                    <TextBlock Text="Toggle Crosshair" FontSize="11" Foreground="{StaticResource TextMuted}"/>
-                                </StackPanel>
-                            </Border>
-                            <Border Grid.Column="1" Background="#12151B" CornerRadius="6" Padding="10,8" Margin="4,0,4,0" BorderBrush="#252A34" BorderThickness="1">
-                                <StackPanel>
-                                    <TextBlock Text="F9" FontSize="14" FontWeight="Bold" Foreground="#00F0FF"/>
-                                    <TextBlock Text="Buka / Tutup Menu" FontSize="11" Foreground="{StaticResource TextMuted}"/>
-                                </StackPanel>
-                            </Border>
-                            <Border Grid.Column="2" Background="#12151B" CornerRadius="6" Padding="10,8" Margin="4,0,0,0" BorderBrush="#252A34" BorderThickness="1">
-                                <StackPanel>
-                                    <TextBlock Text="PgUp / PgDn" FontSize="14" FontWeight="Bold" Foreground="#FFE600"/>
-                                    <TextBlock Text="Ganti Gaya Cepat" FontSize="11" Foreground="{StaticResource TextMuted}"/>
-                                </StackPanel>
-                            </Border>
-                        </Grid>
-                    </StackPanel>
-                </Border>
 
-                <!-- Footer / Credits -->
-                <TextBlock Text="Made with ❤️ by KeefaLegends | Version 1.0.0"
-                           HorizontalAlignment="Center" FontSize="11" Foreground="{StaticResource TextMuted}" Margin="0,4,0,10"/>
-            </StackPanel>
-        </ScrollViewer>
+                            <!-- Avatar / Icon -->
+                            <Border Grid.Column="0" Width="56" Height="56" CornerRadius="28" Background="#162A20"
+                                    BorderBrush="#00FF66" BorderThickness="2" Margin="0,0,16,0">
+                                <TextBlock Text="🎯" FontSize="26" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+
+                            <!-- Profile Info -->
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="KeefaLegends" FontSize="18" FontWeight="Bold" Foreground="#FFFFFF"/>
+                                    <Border Background="#1C2E25" BorderBrush="#00FF66" BorderThickness="1" CornerRadius="4" Padding="6,2" Margin="10,0,0,0">
+                                        <TextBlock Text="CREATOR" FontSize="10" FontWeight="Bold" Foreground="#00FF66" VerticalAlignment="Center"/>
+                                    </Border>
+                                </StackPanel>
+                                <TextBlock Text="Software Developer &amp; Gamer" FontSize="12" Foreground="#00F0FF" Margin="0,2,0,2"/>
+                                <TextBlock Text="Creator of Crosshair Overlay — Precision Reticle for PC Games."
+                                           FontSize="11" Foreground="{StaticResource TextMuted}" TextWrapping="Wrap"/>
+                            </StackPanel>
+
+                            <!-- GitHub Button -->
+                            <Button Grid.Column="2" Style="{StaticResource RoundedButtonStyle}" Click="BtnOpenGithub_Click"
+                                    Background="#252D3D" BorderBrush="#3D4B66" BorderThickness="1" Padding="12,8" VerticalAlignment="Center">
+                                <TextBlock Text="★  GitHub" FontSize="11" FontWeight="SemiBold" Foreground="#FFFFFF"/>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <!-- About Project Details Card -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="TENTANG APLIKASI" Style="{StaticResource SectionTitle}"/>
+                            <TextBlock Text="Crosshair Overlay adalah utility gaming ringan untuk Windows yang menampilkan titik bidik (reticle) virtual di layar. Sangat cocok digunakan untuk game hardcore FPS, simulasi militer, senjata sniper tanpa scope/hip-fire, atau game apa pun yang belum menyediakan crosshair bawaan."
+                                       FontSize="12" Foreground="{StaticResource TextLight}" TextWrapping="Wrap" Margin="0,0,0,12"/>
+
+                            <!-- Highlights Grid (2x2) -->
+                            <Grid Margin="0,2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Item 1: Anti-Cheat Safe -->
+                                <Border Grid.Row="0" Grid.Column="0" Background="#12151B" CornerRadius="6" Padding="10" Margin="0,0,4,8" BorderBrush="#252A34" BorderThickness="1">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
+                                            <TextBlock Text="🛡️" FontSize="13" Margin="0,0,5,0"/>
+                                            <TextBlock Text="Anti-Cheat Safe" FontSize="12" FontWeight="Bold" Foreground="#00FF66"/>
+                                        </StackPanel>
+                                        <TextBlock Text="100% aman! Tanpa DLL injection atau memory hook. Murni overlay jendela Windows transparan."
+                                                   FontSize="11" Foreground="{StaticResource TextMuted}" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Item 2: Click-Through -->
+                                <Border Grid.Row="0" Grid.Column="1" Background="#12151B" CornerRadius="6" Padding="10" Margin="4,0,0,8" BorderBrush="#252A34" BorderThickness="1">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
+                                            <TextBlock Text="🖱️" FontSize="13" Margin="0,0,5,0"/>
+                                            <TextBlock Text="Zero Input Lag" FontSize="12" FontWeight="Bold" Foreground="#00F0FF"/>
+                                        </StackPanel>
+                                        <TextBlock Text="Semua klik mouse &amp; keyboard langsung menembus ke game tanpa jeda (WS_EX_TRANSPARENT)."
+                                                   FontSize="11" Foreground="{StaticResource TextMuted}" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Item 3: Hardware Accelerated -->
+                                <Border Grid.Row="1" Grid.Column="0" Background="#12151B" CornerRadius="6" Padding="10" Margin="0,0,4,0" BorderBrush="#252A34" BorderThickness="1">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
+                                            <TextBlock Text="⚡" FontSize="13" Margin="0,0,5,0"/>
+                                            <TextBlock Text="Performa Ringan" FontSize="12" FontWeight="Bold" Foreground="#FFE600"/>
+                                        </StackPanel>
+                                        <TextBlock Text="Ditenagai DirectX hardware-accelerated. Pemakaian CPU dan RAM mendekati 0%."
+                                                   FontSize="11" Foreground="{StaticResource TextMuted}" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Item 4: Kustomisasi Lengkap -->
+                                <Border Grid.Row="1" Grid.Column="1" Background="#12151B" CornerRadius="6" Padding="10" Margin="4,0,0,0" BorderBrush="#252A34" BorderThickness="1">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,3">
+                                            <TextBlock Text="🎯" FontSize="13" Margin="0,0,5,0"/>
+                                            <TextBlock Text="8 Gaya &amp; Kalibrasi" FontSize="12" FontWeight="Bold" Foreground="#BF5AF2"/>
+                                        </StackPanel>
+                                        <TextBlock Text="Classic, Dot, T-Shape, Circle, Chevron, Box dengan outline kontras &amp; offset pixel X &amp; Y."
+                                                   FontSize="11" Foreground="{StaticResource TextMuted}" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Quick Hotkeys Reminder Card -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="SHORTCUT IN-GAME" Style="{StaticResource SectionTitle}"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0" Background="#12151B" CornerRadius="6" Padding="8,6" Margin="0,0,3,0" BorderBrush="#252A34" BorderThickness="1">
+                                    <StackPanel>
+                                        <TextBlock Text="F10" FontSize="13" FontWeight="Bold" Foreground="#00FF66"/>
+                                        <TextBlock Text="Toggle Crosshair" FontSize="10" Foreground="{StaticResource TextMuted}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Column="1" Background="#12151B" CornerRadius="6" Padding="8,6" Margin="3,0,3,0" BorderBrush="#252A34" BorderThickness="1">
+                                    <StackPanel>
+                                        <TextBlock Text="F9" FontSize="13" FontWeight="Bold" Foreground="#00F0FF"/>
+                                        <TextBlock Text="Buka / Tutup Menu" FontSize="10" Foreground="{StaticResource TextMuted}"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border Grid.Column="2" Background="#12151B" CornerRadius="6" Padding="8,6" Margin="3,0,0,0" BorderBrush="#252A34" BorderThickness="1">
+                                    <StackPanel>
+                                        <TextBlock Text="PgUp / PgDn" FontSize="13" FontWeight="Bold" Foreground="#FFE600"/>
+                                        <TextBlock Text="Ganti Gaya Cepat" FontSize="10" Foreground="{StaticResource TextMuted}"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Footer / Credits -->
+                    <TextBlock Text="Made with ❤️ by KeefaLegends | Version 1.0.0"
+                               HorizontalAlignment="Center" FontSize="11" Foreground="{StaticResource TextMuted}" Margin="0,2,0,8"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
 
         <!-- Bottom Status & Action Bar -->
         <Border Grid.Row="2" Background="#14171D" BorderBrush="#252A34" BorderThickness="0,1,0,0" Padding="16,0">
