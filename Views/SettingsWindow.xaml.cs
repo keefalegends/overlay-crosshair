@@ -379,8 +379,8 @@ namespace CrosshairOverlay.Views
         {
             try
             {
-                Clipboard.SetText("keefayoura3@gmail.com");
-                MessageBox.Show("Alamat email 'keefayoura3@gmail.com' berhasil disalin ke clipboard!", "Email Disalin", MessageBoxButton.OK, MessageBoxImage.Information);
+                Clipboard.SetText("keefastudys@gmail.com");
+                MessageBox.Show("Alamat email 'keefastudys@gmail.com' berhasil disalin ke clipboard!", "Email Disalin", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
@@ -448,7 +448,7 @@ namespace CrosshairOverlay.Views
             {
                 string subject = Uri.EscapeDataString($"[Crosshair Overlay] {category.Trim()}");
                 string body = Uri.EscapeDataString($"Kategori: {category.Trim()}\n\nMasukan:\n{feedback}\n\n---\nDikirim dari Crosshair Overlay v1.0.0");
-                string mailto = $"mailto:keefayoura3@gmail.com?subject={subject}&body={body}";
+                string mailto = $"mailto:keefastudys@gmail.com?subject={subject}&body={body}";
 
                 Process.Start(new ProcessStartInfo
                 {
