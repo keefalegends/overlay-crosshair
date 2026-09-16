@@ -1,8 +1,8 @@
-﻿# Crosshair Overlay
+# Crosshair Overlay
 
 A free, lightweight, esports-grade crosshair overlay for Windows. Built for games that don't provide a built-in crosshair.
 
-[![Release](https://img.shields.io/github/v/release/keefalegends/overlay-crosshair?color=10B981&label=Download)](https://github.com/keefalegends/overlay-crosshair/releases/latest/download/CrosshairOverlay.exe)
+[![Website](https://img.shields.io/badge/website-keefalegends.github.io-10B981)](https://keefalegends.github.io/overlay-crosshair/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-10B981)](LICENSE)
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-blue)
 
@@ -10,7 +10,7 @@ A free, lightweight, esports-grade crosshair overlay for Windows. Built for game
 
 ## Download
 
-**[→ Download CrosshairOverlay.exe](https://github.com/keefalegends/overlay-crosshair/releases/latest/download/CrosshairOverlay.exe)**
+**[→ keefalegends.github.io/overlay-crosshair](https://keefalegends.github.io/overlay-crosshair/)**
 
 No installation required. Single self-contained `.exe`. No .NET runtime needed.
 
