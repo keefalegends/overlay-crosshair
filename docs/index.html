@@ -1,0 +1,397 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crosshair Overlay — Free Esports-Grade Crosshair for Windows</title>
+  <meta name="description" content="A free, anti-cheat safe, zero-input-lag transparent crosshair overlay for Windows. Open source. No installation required." />
+  <meta property="og:title" content="Crosshair Overlay by KeefaLegends" />
+  <meta property="og:description" content="Esports-grade crosshair overlay for Windows. Anti-cheat safe. Zero lag. Free & open source." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text y='20' font-size='20'>🎯</text></svg>" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            surface: '#16171C',
+            panel: '#111215',
+            card: '#1A1C23',
+            accent: '#10B981',
+            'accent-dim': '#059669',
+            'accent-muted': '#132B22',
+            border: '#252732',
+            muted: '#6B7280',
+          },
+          fontFamily: {
+            sans: ['Inter', 'Segoe UI', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Consolas', 'monospace'],
+          },
+        },
+      },
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    html { scroll-behavior: smooth; }
+    body { background-color: #111215; color: #EDEDED; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+
+    .glow-green { box-shadow: 0 0 28px 0 rgba(16, 185, 129, 0.18); }
+    .glow-btn:hover { box-shadow: 0 0 20px 0 rgba(16, 185, 129, 0.30); }
+
+    .noise-bg { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); }
+
+    .fade-in { opacity: 0; transform: translateY(18px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .fade-in.visible { opacity: 1; transform: none; }
+
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 99px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; }
+
+    .nav-link { color: #9CA3AF; font-size: 0.875rem; font-weight: 500; transition: color 0.15s; text-decoration: none; }
+    .nav-link:hover { color: #EDEDED; }
+
+    .feature-card { background: #16171C; border: 1px solid #252732; border-radius: 10px; padding: 20px; transition: border-color 0.2s, transform 0.2s; }
+    .feature-card:hover { border-color: rgba(16,185,129,0.35); transform: translateY(-2px); }
+
+    .step-num { width: 32px; height: 32px; border-radius: 50%; background: #132B22; border: 1.5px solid #10B981; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; color: #10B981; flex-shrink: 0; }
+
+    .kbd { display: inline-flex; align-items: center; padding: 2px 8px; background: #1A1C23; border: 1px solid #252732; border-radius: 5px; font-family: 'JetBrains Mono', Consolas, monospace; font-size: 0.78rem; color: #10B981; font-weight: 600; }
+
+    .feedback-input { background: #111215; border: 1px solid #252732; border-radius: 6px; color: #EDEDED; padding: 10px 12px; width: 100%; font-size: 0.875rem; outline: none; transition: border-color 0.15s; resize: vertical; font-family: inherit; }
+    .feedback-input:focus { border-color: #10B981; }
+    .feedback-input::placeholder { color: #4B5563; }
+
+    .feedback-select { appearance: none; background: #111215 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239CA3AF' d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right 12px center; border: 1px solid #252732; border-radius: 6px; color: #EDEDED; padding: 10px 36px 10px 12px; width: 100%; font-size: 0.875rem; outline: none; transition: border-color 0.15s; }
+    .feedback-select:focus { border-color: #10B981; }
+    .feedback-select option { background: #16171C; }
+
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); opacity: 0; background: #16171C; border: 1px solid #10B981; color: #10B981; padding: 10px 20px; border-radius: 8px; font-size: 0.875rem; font-weight: 600; transition: all 0.3s ease; z-index: 999; pointer-events: none; white-space: nowrap; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body class="noise-bg">
+
+  <!-- NAVBAR -->
+  <nav class="sticky top-0 z-50 border-b border-[#1E2028] bg-[#111215]/90 backdrop-blur-sm">
+    <div class="max-w-5xl mx-auto px-5 h-14 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-7 h-7 rounded-md bg-accent flex items-center justify-center text-[#0E1013] font-black text-base leading-none select-none">+</div>
+        <span class="font-bold text-sm tracking-wide text-[#EDEDED]">CROSSHAIR <span class="font-normal text-[#7E8494]">OVERLAY</span></span>
+      </div>
+      <div class="hidden sm:flex items-center gap-6">
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#install" class="nav-link">Install</a>
+        <a href="#shortcuts" class="nav-link">Shortcuts</a>
+        <a href="#feedback" class="nav-link">Feedback</a>
+        <a href="https://github.com/keefalegends/overlay-crosshair" target="_blank" rel="noopener"
+           class="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#1A1C23] border border-[#252732] text-xs font-semibold text-[#EDEDED] hover:border-accent transition-colors">
+          ★ GitHub
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="max-w-5xl mx-auto px-5 pt-20 pb-16 text-center fade-in">
+    <!-- Top badge -->
+    <div class="flex justify-center mb-5">
+      <span class="badge bg-accent-muted text-accent border border-accent/25">
+        <span class="w-1.5 h-1.5 rounded-full bg-accent inline-block"></span>
+        Free &amp; Open Source
+      </span>
+    </div>
+
+    <h1 class="text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight text-[#EDEDED] mb-4">
+      Esports-Grade Crosshair<br/>
+      <span class="text-accent">Overlay for Windows</span>
+    </h1>
+    <p class="text-[#9CA3AF] text-lg max-w-xl mx-auto mb-8 leading-relaxed">
+      A zero-lag, anti-cheat safe crosshair overlay for games that don&apos;t provide one.
+      8 reticle shapes, fully customizable, no installation required.
+    </p>
+
+    <!-- CTA Buttons -->
+    <div class="flex flex-col sm:flex-row gap-3 justify-center mb-10">
+      <a href="https://github.com/keefalegends/overlay-crosshair/releases/latest/download/CrosshairOverlay.exe"
+         class="glow-btn inline-flex items-center justify-center gap-2 px-7 py-3 rounded-lg bg-accent text-[#0E1013] text-sm font-bold transition-all hover:bg-accent-dim">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        Download for Windows
+      </a>
+      <a href="https://github.com/keefalegends/overlay-crosshair" target="_blank" rel="noopener"
+         class="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-lg bg-[#1A1C23] border border-[#252732] text-sm font-semibold text-[#EDEDED] hover:border-accent/50 transition-colors">
+        View on GitHub →
+      </a>
+    </div>
+
+    <!-- Proof badges -->
+    <div class="flex flex-wrap justify-center gap-3 text-xs font-semibold text-[#6B7280]">
+      <span class="flex items-center gap-1.5"><span class="text-accent">✓</span> Windows 10 / 11</span>
+      <span class="flex items-center gap-1.5"><span class="text-accent">✓</span> Anti-Cheat Safe</span>
+      <span class="flex items-center gap-1.5"><span class="text-accent">✓</span> Zero Input Lag</span>
+      <span class="flex items-center gap-1.5"><span class="text-accent">✓</span> No Installation Required</span>
+      <span class="flex items-center gap-1.5"><span class="text-accent">✓</span> Self-Contained .exe</span>
+    </div>
+  </section>
+
+  <!-- PREVIEW SCREENSHOT MOCKUP -->
+  <section class="max-w-3xl mx-auto px-5 mb-20 fade-in">
+    <div class="rounded-xl border border-[#252732] bg-[#16171C] overflow-hidden">
+      <!-- Fake window chrome -->
+      <div class="flex items-center gap-2 px-4 py-2.5 border-b border-[#1E2028] bg-[#14151A]">
+        <div class="w-2.5 h-2.5 rounded-full bg-[#FF5F57]"></div>
+        <div class="w-2.5 h-2.5 rounded-full bg-[#FEBC2E]"></div>
+        <div class="w-2.5 h-2.5 rounded-full bg-[#28C840]"></div>
+        <span class="ml-3 text-[10px] font-semibold text-[#6B7280] tracking-widest uppercase">Crosshair Overlay — Settings</span>
+        <div class="ml-auto flex items-center gap-1.5">
+          <span class="badge bg-accent-muted text-accent"><span class="w-1 h-1 rounded-full bg-accent"></span>ACTIVE</span>
+        </div>
+      </div>
+      <!-- Mock content -->
+      <div class="p-5 grid grid-cols-5 gap-4 min-h-[220px]">
+        <!-- Left preview pane -->
+        <div class="col-span-2 bg-[#0F1013] rounded-lg border border-[#23252E] flex items-center justify-center relative overflow-hidden">
+          <div class="absolute inset-0 flex items-center justify-center opacity-20">
+            <div class="w-full h-px bg-accent"></div>
+          </div>
+          <div class="absolute inset-0 flex items-center justify-center opacity-20">
+            <div class="h-full w-px bg-accent"></div>
+          </div>
+          <!-- Cross reticle -->
+          <div class="relative w-6 h-6">
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-2 bg-accent rounded-full"></div>
+            <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0.5 h-2 bg-accent rounded-full"></div>
+            <div class="absolute left-0 top-1/2 -translate-y-1/2 h-0.5 w-2 bg-accent rounded-full"></div>
+            <div class="absolute right-0 top-1/2 -translate-y-1/2 h-0.5 w-2 bg-accent rounded-full"></div>
+            <div class="absolute inset-[42%] bg-accent rounded-full"></div>
+          </div>
+        </div>
+        <!-- Right sliders mock -->
+        <div class="col-span-3 space-y-3 flex flex-col justify-center">
+          <p class="text-[10px] font-bold text-[#555B6D] tracking-widest uppercase mb-1">GEOMETRY &amp; DIMENSIONS</p>
+          <div v-for="label in ['Length','Thickness','Center Gap','Opacity']" class="space-y-0">
+            <div class="flex items-center gap-2" v-for="(label, i) in ['Length','Thickness','Center Gap','Opacity']">
+              <span class="text-[11px] text-[#9CA3AF] w-20 shrink-0">Length</span>
+              <div class="flex-1 h-1 bg-[#252733] rounded-full"><div class="h-1 bg-accent rounded-full" style="width:32%"></div></div>
+              <span class="text-[11px] font-semibold text-[#EDEDED] w-8 text-right">10px</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] text-[#9CA3AF] w-20 shrink-0">Thickness</span>
+            <div class="flex-1 h-1 bg-[#252733] rounded-full"><div class="h-1 bg-accent rounded-full" style="width:18%"></div></div>
+            <span class="text-[11px] font-semibold text-[#EDEDED] w-8 text-right">2px</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] text-[#9CA3AF] w-20 shrink-0">Center Gap</span>
+            <div class="flex-1 h-1 bg-[#252733] rounded-full"><div class="h-1 bg-accent rounded-full" style="width:22%"></div></div>
+            <span class="text-[11px] font-semibold text-[#EDEDED] w-8 text-right">5px</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] text-[#9CA3AF] w-20 shrink-0">Opacity</span>
+            <div class="flex-1 h-1 bg-[#252733] rounded-full"><div class="h-1 bg-accent rounded-full" style="width:100%"></div></div>
+            <span class="text-[11px] font-semibold text-[#EDEDED] w-8 text-right">100%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="text-center text-xs text-[#555B6D] mt-3">Settings panel with live reticle preview &amp; pixel-level controls</p>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="max-w-5xl mx-auto px-5 mb-20">
+    <div class="text-center mb-10 fade-in">
+      <p class="text-xs font-bold text-accent tracking-widest uppercase mb-2">ENGINEERING FIRST</p>
+      <h2 class="text-2xl sm:text-3xl font-bold text-[#EDEDED]">Built for serious gamers</h2>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 fade-in">
+      <div class="feature-card">
+        <div class="text-2xl mb-3">🛡️</div>
+        <h3 class="font-bold text-[#EDEDED] mb-1.5">Anti-Cheat Compliant</h3>
+        <p class="text-sm text-[#6B7280] leading-relaxed">Pure top-level transparent DWM layer. No DLL injection, no memory read/write. Works safely alongside all major anti-cheat engines.</p>
+      </div>
+      <div class="feature-card">
+        <div class="text-2xl mb-3">🖱️</div>
+        <h3 class="font-bold text-[#EDEDED] mb-1.5">Zero Input Lag</h3>
+        <p class="text-sm text-[#6B7280] leading-relaxed">Native Win32 <code class="text-xs bg-[#1A1C23] px-1 py-0.5 rounded text-accent font-mono">WS_EX_TRANSPARENT</code> pass-through. Every click and keystroke goes straight to your game, no interruptions.</p>
+      </div>
+      <div class="feature-card">
+        <div class="text-2xl mb-3">⚡</div>
+        <h3 class="font-bold text-[#EDEDED] mb-1.5">DirectX Accelerated</h3>
+        <p class="text-sm text-[#6B7280] leading-relaxed">Vector reticle renderer using WPF DrawingContext. Sub-1% CPU and GPU overhead — completely invisible to your frame budget.</p>
+      </div>
+      <div class="feature-card">
+        <div class="text-2xl mb-3">🎯</div>
+        <h3 class="font-bold text-[#EDEDED] mb-1.5">8 Reticle Shapes</h3>
+        <p class="text-sm text-[#6B7280] leading-relaxed">Classic Cross, Center Dot, Cross + Dot, T-Shape, Circle, Circle + Dot, Chevron, and Box. Cycle through them instantly in-game.</p>
+      </div>
+      <div class="feature-card">
+        <div class="text-2xl mb-3">🎨</div>
+        <h3 class="font-bold text-[#EDEDED] mb-1.5">Full Customization</h3>
+        <p class="text-sm text-[#6B7280] leading-relaxed">Control size, thickness, gap, opacity, outline contrast, and screen offset via pixel-level sliders. Includes 8 preset colors + custom hex input.</p>
+      </div>
+      <div class="feature-card">
+        <div class="text-2xl mb-3">📦</div>
+        <h3 class="font-bold text-[#EDEDED] mb-1.5">No Installation</h3>
+        <p class="text-sm text-[#6B7280] leading-relaxed">Single self-contained <code class="text-xs bg-[#1A1C23] px-1 py-0.5 rounded text-accent font-mono">.exe</code> file. No .NET runtime required. Download and run — settings auto-save to a local JSON file.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSTALL STEPS -->
+  <section id="install" class="max-w-5xl mx-auto px-5 mb-20">
+    <div class="bg-[#16171C] border border-[#252732] rounded-xl p-8 fade-in">
+      <div class="text-center mb-8">
+        <p class="text-xs font-bold text-accent tracking-widest uppercase mb-2">GETTING STARTED</p>
+        <h2 class="text-2xl font-bold text-[#EDEDED]">Up and running in 3 steps</h2>
+      </div>
+      <div class="max-w-lg mx-auto space-y-6">
+        <div class="flex items-start gap-4">
+          <div class="step-num">1</div>
+          <div>
+            <p class="font-semibold text-[#EDEDED] mb-0.5">Download the executable</p>
+            <p class="text-sm text-[#6B7280]">Click the Download button above to get <code class="text-xs bg-[#1A1C23] px-1 py-0.5 rounded text-accent font-mono">CrosshairOverlay.exe</code>. No installer, no admin rights needed.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4">
+          <div class="step-num">2</div>
+          <div>
+            <p class="font-semibold text-[#EDEDED] mb-0.5">Run the app &amp; configure</p>
+            <p class="text-sm text-[#6B7280]">Double-click the file to launch. Use the Settings panel to pick your reticle shape, color, size, and offset. The crosshair appears instantly over your desktop.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4">
+          <div class="step-num">3</div>
+          <div>
+            <p class="font-semibold text-[#EDEDED] mb-0.5">Play in Borderless Windowed mode</p>
+            <p class="text-sm text-[#6B7280]">Set your game to <strong class="text-[#EDEDED]">Borderless Windowed</strong> (or Windowed). The overlay will sit perfectly on top. Press <span class="kbd">F10</span> to toggle it in-game.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 flex justify-center">
+        <a href="https://github.com/keefalegends/overlay-crosshair/releases/latest/download/CrosshairOverlay.exe"
+           class="glow-btn inline-flex items-center gap-2 px-8 py-3 rounded-lg bg-accent text-[#0E1013] text-sm font-bold transition-all hover:bg-accent-dim">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          Download CrosshairOverlay.exe
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- KEYBOARD SHORTCUTS -->
+  <section id="shortcuts" class="max-w-5xl mx-auto px-5 mb-20 fade-in">
+    <div class="text-center mb-8">
+      <p class="text-xs font-bold text-accent tracking-widest uppercase mb-2">IN-GAME CONTROLS</p>
+      <h2 class="text-2xl font-bold text-[#EDEDED]">Keyboard shortcuts</h2>
+    </div>
+    <div class="grid sm:grid-cols-3 gap-4">
+      <div class="bg-[#16171C] border border-[#252732] rounded-xl p-6 text-center">
+        <div class="text-3xl font-extrabold text-accent mb-2 font-mono">F10</div>
+        <p class="font-semibold text-[#EDEDED] text-sm mb-1">Toggle Overlay</p>
+        <p class="text-xs text-[#6B7280]">Show or hide the crosshair without opening settings.</p>
+      </div>
+      <div class="bg-[#16171C] border border-[#252732] rounded-xl p-6 text-center">
+        <div class="text-3xl font-extrabold text-[#EDEDED] mb-2 font-mono">F9</div>
+        <p class="font-semibold text-[#EDEDED] text-sm mb-1">Open Settings</p>
+        <p class="text-xs text-[#6B7280]">Bring up the settings panel from anywhere, even mid-game.</p>
+      </div>
+      <div class="bg-[#16171C] border border-[#252732] rounded-xl p-6 text-center">
+        <div class="text-xl font-extrabold text-[#EDEDED] mb-2 font-mono">PgUp / PgDn</div>
+        <p class="font-semibold text-[#EDEDED] text-sm mb-1">Cycle Reticle</p>
+        <p class="text-xs text-[#6B7280]">Quickly switch between all 8 reticle shapes on the fly.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEEDBACK SECTION -->
+  <section id="feedback" class="max-w-5xl mx-auto px-5 mb-24 fade-in">
+    <div class="bg-[#16171C] border border-[#252732] rounded-xl p-8">
+      <div class="text-center mb-8">
+        <p class="text-xs font-bold text-accent tracking-widest uppercase mb-2">HAVE A SUGGESTION?</p>
+        <h2 class="text-2xl font-bold text-[#EDEDED]">Send feedback</h2>
+        <p class="text-sm text-[#6B7280] mt-2 max-w-md mx-auto">Found a bug, want a new reticle shape, or have a feature idea? Drop it here — it goes straight to the developer.</p>
+      </div>
+
+      <div class="max-w-xl mx-auto space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-[#9CA3AF] mb-1.5 uppercase tracking-wider">Type</label>
+          <select id="feedbackType" class="feedback-select">
+            <option value="feature">💡 Feature Request</option>
+            <option value="shape">🎯 New Reticle Shape</option>
+            <option value="bug">🐛 Bug Report</option>
+            <option value="general">💬 General Feedback</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-[#9CA3AF] mb-1.5 uppercase tracking-wider">Your Message</label>
+          <textarea id="feedbackText" class="feedback-input" rows="5" placeholder="Describe your idea, bug, or feedback clearly..."></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-3 pt-1">
+          <button onclick="sendViaGithub()" class="flex items-center justify-center gap-2 py-2.5 rounded-lg bg-accent text-[#0E1013] text-sm font-bold hover:bg-accent-dim transition-colors glow-btn">
+            🚀 Submit GitHub Issue
+          </button>
+          <button onclick="sendViaEmail()" class="flex items-center justify-center gap-2 py-2.5 rounded-lg bg-[#1A1C23] border border-[#252732] text-sm font-semibold text-[#EDEDED] hover:border-accent/50 transition-colors">
+            ✉️ Send via Email
+          </button>
+        </div>
+        <p class="text-center text-xs text-[#4B5563] pt-1">Or email directly: <a href="mailto:keefastudys@gmail.com" class="text-accent hover:underline">keefastudys@gmail.com</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-[#1E2028] py-8 text-center">
+    <div class="max-w-5xl mx-auto px-5">
+      <div class="flex items-center justify-center gap-2 mb-3">
+        <div class="w-6 h-6 rounded-md bg-accent flex items-center justify-center text-[#0E1013] font-black text-sm">+</div>
+        <span class="font-bold text-sm text-[#EDEDED]">Crosshair Overlay</span>
+      </div>
+      <p class="text-sm text-[#4B5563] mb-3">Built by <a href="https://github.com/keefalegends" target="_blank" rel="noopener" class="text-accent hover:underline">KeefaLegends</a> with C# .NET WPF</p>
+      <p class="text-xs text-[#374151]">Open Source under MIT License &nbsp;·&nbsp; <a href="https://github.com/keefalegends/overlay-crosshair" target="_blank" rel="noopener" class="hover:text-[#6B7280] transition-colors">GitHub Repository</a></p>
+    </div>
+  </footer>
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast"></div>
+
+  <script>
+    // Fade-in on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(el => { if (el.isIntersecting) el.target.classList.add('visible'); });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    function getFeedbackBody() {
+      const type = document.getElementById('feedbackType');
+      const text = document.getElementById('feedbackText').value.trim();
+      const label = type.options[type.selectedIndex].text;
+      return { text, label, type: type.value };
+    }
+
+    function sendViaGithub() {
+      const { text, label } = getFeedbackBody();
+      if (!text) { showToast('⚠️ Please write your message first.'); return; }
+      const title = encodeURIComponent(`[${label}] `);
+      const body = encodeURIComponent(text);
+      window.open(`https://github.com/keefalegends/overlay-crosshair/issues/new?title=${title}&body=${body}`, '_blank');
+    }
+
+    function sendViaEmail() {
+      const { text, label } = getFeedbackBody();
+      if (!text) { showToast('⚠️ Please write your message first.'); return; }
+      const subject = encodeURIComponent(`Crosshair Overlay — ${label}`);
+      const body = encodeURIComponent(text);
+      const gmailUrl = `https://mail.google.com/mail/?view=cm&to=keefastudys@gmail.com&su=${subject}&body=${body}`;
+      window.open(gmailUrl, '_blank');
+    }
+  </script>
+</body>
+</html>
