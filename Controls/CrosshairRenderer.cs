@@ -56,6 +56,12 @@ namespace CrosshairOverlay.Controls
             InvalidateVisual();
         }
 
+        public CrosshairRenderer()
+        {
+            SnapsToDevicePixels = true;
+            UseLayoutRounding = true;
+        }
+
         protected override void OnRender(DrawingContext dc)
         {
             base.OnRender(dc);
@@ -69,8 +75,29 @@ namespace CrosshairOverlay.Controls
             if (width <= 0 || height <= 0)
                 return;
 
-            double cx = Math.Round(width / 2.0);
-            double cy = Math.Round(height / 2.0);
+            double centerBaseX = Math.Floor(width / 2.0);
+            double centerBaseY = Math.Floor(height / 2.0);
+
+            if (IsPreview)
+            {
+                // Subtle esports reticle guide lines (crisp 1px aligned to device pixel grid)
+                var guideBrush = new SolidColorBrush(Color.FromRgb(0x28, 0x2C, 0x38));
+                if (guideBrush.CanFreeze) guideBrush.Freeze();
+                var guidePen = new Pen(guideBrush, 1.0);
+                if (guidePen.CanFreeze) guidePen.Freeze();
+
+                double guideX = centerBaseX + 0.5;
+                double guideY = centerBaseY + 0.5;
+
+                // Horizontal center line across viewport
+                dc.DrawLine(guidePen, new Point(0, guideY), new Point(width, guideY));
+                // Vertical center line across viewport
+                dc.DrawLine(guidePen, new Point(guideX, 0), new Point(guideX, height));
+            }
+
+            // In preview mode, allow reticle to move relative to center base guide lines if offset is set
+            double cx = centerBaseX + (IsPreview ? config.OffsetX : 0);
+            double cy = centerBaseY + (IsPreview ? config.OffsetY : 0);
 
             Brush mainBrush;
             try

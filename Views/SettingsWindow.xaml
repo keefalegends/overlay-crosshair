@@ -405,18 +405,7 @@
                     <StackPanel Grid.Row="0">
                         <TextBlock Text="RETICLE PREVIEW" Style="{StaticResource SectionHeading}"/>
                         <Border Height="165" CornerRadius="5" Background="#121316" BorderBrush="#23252B" BorderThickness="1" ClipToBounds="True">
-                            <Grid>
-                                <!-- Minimal Subtle Hair-Cross Guide -->
-                                <Path Stroke="#1D1F25" StrokeThickness="1">
-                                    <Path.Data>
-                                        <GeometryGroup>
-                                            <LineGeometry StartPoint="0,82.5" EndPoint="290,82.5" />
-                                            <LineGeometry StartPoint="145,0" EndPoint="145,165" />
-                                        </GeometryGroup>
-                                    </Path.Data>
-                                </Path>
-                                <controls:CrosshairRenderer x:Name="PreviewRenderer" IsPreview="True" />
-                            </Grid>
+                            <controls:CrosshairRenderer x:Name="PreviewRenderer" IsPreview="True" />
                         </Border>
                     </StackPanel>
 
