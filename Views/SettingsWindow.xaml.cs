@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -339,6 +340,38 @@ namespace CrosshairOverlay.Views
             else if (result == MessageBoxResult.No)
             {
                 Hide();
+            }
+        }
+
+        private void NavTab_Checked(object sender, RoutedEventArgs e)
+        {
+            if (SettingsView == null || AboutView == null) return;
+
+            if (TabSettings.IsChecked == true)
+            {
+                SettingsView.Visibility = Visibility.Visible;
+                AboutView.Visibility = Visibility.Collapsed;
+            }
+            else if (TabAbout.IsChecked == true)
+            {
+                SettingsView.Visibility = Visibility.Collapsed;
+                AboutView.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void BtnOpenGithub_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "https://github.com/keefalegends/overlay-crosshair",
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Tidak dapat membuka browser: {ex.Message}", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
