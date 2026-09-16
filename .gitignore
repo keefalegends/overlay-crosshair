@@ -3,6 +3,7 @@
 [Oo]bj/
 publish/
 publish-single/
+dist/
 
 ## Executables & Binaries
 *.exe
