@@ -134,5 +134,21 @@ namespace CrosshairOverlay.Models
             OffsetY = 0;
             IsVisible = true;
         }
+
+        /// <summary>
+        /// Clamps all numeric values to safe UI ranges.
+        /// Called after deserialization to guard against hand-edited or corrupted JSON.
+        /// </summary>
+        public void Clamp()
+        {
+            Size            = Math.Clamp(Size, 1, 100);
+            Thickness       = Math.Clamp(Thickness, 1, 20);
+            Gap             = Math.Clamp(Gap, 0, 50);
+            DotSize         = Math.Clamp(DotSize, 1, 30);
+            Opacity         = Math.Clamp(Opacity, 0.05, 1.0);
+            OutlineThickness = Math.Clamp(OutlineThickness, 0.5, 5.0);
+            OffsetX         = Math.Clamp(OffsetX, -500, 500);
+            OffsetY         = Math.Clamp(OffsetY, -500, 500);
+        }
     }
 }
