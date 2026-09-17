@@ -59,15 +59,16 @@ namespace CrosshairOverlay.Views
         {
             if (_config.IsVisible)
             {
-                if (!IsVisible)
-                {
-                    Show();
-                }
+                if (!IsVisible) Show();
                 ReassertTopmost();
+                // Only run topmost reassertion timer while the overlay is actually visible
+                _topmostTimer?.Start();
             }
             else
             {
                 Hide();
+                // Stop timer while hidden — no need to wake the UI thread every 2s for nothing
+                _topmostTimer?.Stop();
             }
         }
 
