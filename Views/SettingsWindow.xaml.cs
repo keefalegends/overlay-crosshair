@@ -512,6 +512,8 @@ namespace CrosshairOverlay.Views
         {
             UnregisterGlobalHotkeys();
             _hwndSource?.RemoveHook(HwndHook);
+            _hwndSource?.Dispose();  // Release unmanaged Win32 handle
+            _hwndSource = null;
             _config.PropertyChanged -= Config_PropertyChanged;
             ConfigService.Save(_config);
             base.OnClosed(e);
