@@ -425,10 +425,8 @@
 
                 <!-- Brand & Status -->
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Border Width="22" Height="22" CornerRadius="5" Background="#10B981" Margin="0,0,9,0">
-                        <TextBlock Text="+" FontSize="15" FontWeight="Bold" Foreground="#0E1013"
-                                   HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-2,0,0"/>
-                    </Border>
+                    <Image Source="/Resources/logo.png" Width="26" Height="26" Margin="0,0,9,0"
+                           RenderOptions.BitmapScalingMode="HighQuality" SnapsToDevicePixels="True"/>
                     <TextBlock Text="CROSSHAIR" FontWeight="Bold" FontSize="13" Foreground="#EDEDED" VerticalAlignment="Center"/>
                     <TextBlock Text="OVERLAY" FontWeight="Normal" FontSize="13" Foreground="#7E8494" VerticalAlignment="Center" Margin="4,0,0,0"/>
                     
