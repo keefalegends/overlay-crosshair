@@ -193,16 +193,18 @@ namespace CrosshairOverlay.Views
 
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (_isInitializing) return;
+            if (_isInitializing || sender is not Slider s) return;
 
-            _config.Size = SliderSize.Value;
-            _config.Thickness = SliderThickness.Value;
-            _config.Gap = SliderGap.Value;
-            _config.DotSize = SliderDotSize.Value;
-            _config.Opacity = SliderOpacity.Value / 100.0;
-            _config.OutlineThickness = SliderOutlineThickness.Value;
-            _config.OffsetX = (int)SliderOffsetX.Value;
-            _config.OffsetY = (int)SliderOffsetY.Value;
+            // Only update the specific property that changed — avoids firing 7 PropertyChanged
+            // events (and 7 potential disk writes) every time a single slider moves.
+            if      (s == SliderSize)            _config.Size = s.Value;
+            else if (s == SliderThickness)       _config.Thickness = s.Value;
+            else if (s == SliderGap)             _config.Gap = s.Value;
+            else if (s == SliderDotSize)         _config.DotSize = s.Value;
+            else if (s == SliderOpacity)         _config.Opacity = s.Value / 100.0;
+            else if (s == SliderOutlineThickness) _config.OutlineThickness = s.Value;
+            else if (s == SliderOffsetX)         _config.OffsetX = (int)s.Value;
+            else if (s == SliderOffsetY)         _config.OffsetY = (int)s.Value;
         }
 
         private void CmbStyle_SelectionChanged(object sender, SelectionChangedEventArgs e)
