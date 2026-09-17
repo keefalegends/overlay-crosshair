@@ -18,6 +18,10 @@ namespace CrosshairOverlay.Views
         private IntPtr _hwnd = IntPtr.Zero;
         private HwndSource? _hwndSource;
 
+        // Debounce timer: delays disk write by 600ms after last config change.
+        // Prevents File.WriteAllText() from being called 60x/sec during slider drag.
+        private DispatcherTimer? _saveDebounceTimer;
+
         private const int HOTKEY_TOGGLE_OVERLAY = 9001;
         private const int HOTKEY_TOGGLE_SETTINGS = 9002;
         private const int HOTKEY_STYLE_NEXT = 9003;
@@ -37,8 +41,26 @@ namespace CrosshairOverlay.Views
             PreviewRenderer.Config = _config;
             _config.PropertyChanged += Config_PropertyChanged;
 
+            // Initialize debounce timer (not started yet — started on first ScheduleSave call)
+            _saveDebounceTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(600)
+            };
+            _saveDebounceTimer.Tick += (_, _) =>
+            {
+                _saveDebounceTimer.Stop();
+                ConfigService.Save(_config);
+            };
+
             LoadConfigToUI();
             _isInitializing = false;
+        }
+
+        private void ScheduleSave()
+        {
+            // Reset the 600ms countdown on every config change
+            _saveDebounceTimer?.Stop();
+            _saveDebounceTimer?.Start();
         }
 
         private void LoadConfigToUI()
@@ -82,7 +104,8 @@ namespace CrosshairOverlay.Views
                     }
                 });
             }
-            ConfigService.Save(_config);
+            // Debounced: coalesces rapid slider changes into a single disk write
+            ScheduleSave();
         }
 
         private void UpdateStatusUI()
@@ -534,6 +557,12 @@ namespace CrosshairOverlay.Views
 
         protected override void OnClosed(EventArgs e)
         {
+            // Stop debounce timer and do final save immediately on close
+            if (_saveDebounceTimer != null)
+            {
+                _saveDebounceTimer.Stop();
+                _saveDebounceTimer = null;
+            }
             UnregisterGlobalHotkeys();
             _hwndSource?.RemoveHook(HwndHook);
             _hwndSource?.Dispose();  // Release unmanaged Win32 handle
