@@ -118,13 +118,35 @@ namespace CrosshairOverlay.Views
         {
             if (_hwnd == IntPtr.Zero) return;
 
-            // F10: Toggle Overlay
-            Win32Helper.RegisterHotKey(_hwnd, HOTKEY_TOGGLE_OVERLAY, Win32Helper.MOD_NOREPEAT, VK_F10);
-            // F9: Toggle Settings Window
-            Win32Helper.RegisterHotKey(_hwnd, HOTKEY_TOGGLE_SETTINGS, Win32Helper.MOD_NOREPEAT, VK_F9);
-            // Page Up / Down: Cycle Styles
-            Win32Helper.RegisterHotKey(_hwnd, HOTKEY_STYLE_NEXT, Win32Helper.MOD_NOREPEAT, VK_PRIOR);
-            Win32Helper.RegisterHotKey(_hwnd, HOTKEY_STYLE_PREV, Win32Helper.MOD_NOREPEAT, VK_NEXT);
+            bool f10Ok  = Win32Helper.RegisterHotKey(_hwnd, HOTKEY_TOGGLE_OVERLAY,  Win32Helper.MOD_NOREPEAT, VK_F10);
+            bool f9Ok   = Win32Helper.RegisterHotKey(_hwnd, HOTKEY_TOGGLE_SETTINGS, Win32Helper.MOD_NOREPEAT, VK_F9);
+            bool pgUpOk = Win32Helper.RegisterHotKey(_hwnd, HOTKEY_STYLE_NEXT,      Win32Helper.MOD_NOREPEAT, VK_PRIOR);
+            bool pgDnOk = Win32Helper.RegisterHotKey(_hwnd, HOTKEY_STYLE_PREV,      Win32Helper.MOD_NOREPEAT, VK_NEXT);
+
+            // Notify user if a key couldn't be registered — common cause: OBS, Nvidia, MSI Afterburner
+            // stealing F9/F10. Use BeginInvoke so the warning doesn't block app startup.
+            if (!f10Ok || !f9Ok || !pgUpOk || !pgDnOk)
+            {
+                var failed = string.Join(", ", new[]
+                {
+                    !f10Ok  ? "F10 (Toggle Overlay)" : null,
+                    !f9Ok   ? "F9 (Toggle Settings)" : null,
+                    !pgUpOk ? "Page Up (Next Style)" : null,
+                    !pgDnOk ? "Page Down (Prev Style)" : null,
+                }.Where(s => s != null));
+
+                Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBox.Show(
+                        $"Warning: The following hotkey(s) could not be registered:\n\n  {failed}\n\n" +
+                        "Another application is already using them (e.g. OBS, Nvidia Overlay, MSI Afterburner).\n\n" +
+                        "Affected hotkeys won't work in-game. Use the Settings panel buttons instead.",
+                        "Hotkey Conflict Detected",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning
+                    );
+                }, System.Windows.Threading.DispatcherPriority.Background);
+            }
         }
 
         private void UnregisterGlobalHotkeys()
