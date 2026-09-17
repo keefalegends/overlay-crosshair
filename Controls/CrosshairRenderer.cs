@@ -35,6 +35,45 @@ namespace CrosshairOverlay.Controls
             set => SetValue(IsPreviewProperty, value);
         }
 
+        // Brush cache — avoids allocating new BrushConverter + Brush on every OnRender call.
+        // Only re-parses when the hex string actually changes.
+        private string _cachedColorHex = "";
+        private string _cachedOutlineHex = "";
+        private Brush _cachedMainBrush = Brushes.LimeGreen;
+        private Brush _cachedOutlineBrush = Brushes.Black;
+
+        private Brush GetMainBrush(string hex)
+        {
+            if (hex == _cachedColorHex) return _cachedMainBrush;
+            try
+            {
+                var b = (Brush)(new BrushConverter().ConvertFromString(hex) ?? Brushes.LimeGreen);
+                if (b.CanFreeze) b.Freeze();
+                _cachedColorHex = hex;
+                return _cachedMainBrush = b;
+            }
+            catch { return _cachedMainBrush = Brushes.LimeGreen; }
+        }
+
+        private Brush GetOutlineBrush(string hex)
+        {
+            if (hex == _cachedOutlineHex) return _cachedOutlineBrush;
+            try
+            {
+                var b = (Brush)(new BrushConverter().ConvertFromString(hex) ?? Brushes.Black);
+                if (b.CanFreeze) b.Freeze();
+                _cachedOutlineHex = hex;
+                return _cachedOutlineBrush = b;
+            }
+            catch { return _cachedOutlineBrush = Brushes.Black; }
+        }
+
+        public CrosshairRenderer()
+        {
+            SnapsToDevicePixels = true;
+            UseLayoutRounding = true;
+        }
+
         private static void OnConfigChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is CrosshairRenderer renderer)
@@ -54,12 +93,6 @@ namespace CrosshairOverlay.Controls
         private void OnConfigPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             InvalidateVisual();
-        }
-
-        public CrosshairRenderer()
-        {
-            SnapsToDevicePixels = true;
-            UseLayoutRounding = true;
         }
 
         protected override void OnRender(DrawingContext dc)
@@ -99,27 +132,9 @@ namespace CrosshairOverlay.Controls
             double cx = centerBaseX + (IsPreview ? config.OffsetX : 0);
             double cy = centerBaseY + (IsPreview ? config.OffsetY : 0);
 
-            Brush mainBrush;
-            try
-            {
-                mainBrush = (Brush)(new BrushConverter().ConvertFromString(config.ColorHex) ?? Brushes.LimeGreen);
-            }
-            catch
-            {
-                mainBrush = Brushes.LimeGreen;
-            }
-            if (mainBrush.CanFreeze) mainBrush.Freeze();
-
-            Brush outlineBrush;
-            try
-            {
-                outlineBrush = (Brush)(new BrushConverter().ConvertFromString(config.OutlineColorHex) ?? Brushes.Black);
-            }
-            catch
-            {
-                outlineBrush = Brushes.Black;
-            }
-            if (outlineBrush.CanFreeze) outlineBrush.Freeze();
+            // Use cached brushes — only re-parses hex string when color actually changes
+            Brush mainBrush = GetMainBrush(config.ColorHex);
+            Brush outlineBrush = GetOutlineBrush(config.OutlineColorHex);
 
             dc.PushOpacity(Math.Clamp(config.Opacity, 0.0, 1.0));
 
