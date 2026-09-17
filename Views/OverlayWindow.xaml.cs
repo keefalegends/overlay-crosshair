@@ -29,18 +29,20 @@ namespace CrosshairOverlay.Views
 
         private void SystemEvents_DisplaySettingsChanged(object? sender, EventArgs e)
         {
-            Dispatcher.Invoke(UpdatePosition);
+            // BeginInvoke (async) avoids blocking the SystemEvents thread — prevents deadlock
+            // if the UI thread is busy mid-render when display settings change.
+            Dispatcher.BeginInvoke(UpdatePosition, System.Windows.Threading.DispatcherPriority.Normal);
         }
 
         private void Config_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(CrosshairConfig.IsVisible))
             {
-                Dispatcher.Invoke(UpdateVisibility);
+                Dispatcher.BeginInvoke(UpdateVisibility, System.Windows.Threading.DispatcherPriority.Normal);
             }
             else if (e.PropertyName == nameof(CrosshairConfig.OffsetX) || e.PropertyName == nameof(CrosshairConfig.OffsetY))
             {
-                Dispatcher.Invoke(UpdatePosition);
+                Dispatcher.BeginInvoke(UpdatePosition, System.Windows.Threading.DispatcherPriority.Normal);
             }
         }
 
