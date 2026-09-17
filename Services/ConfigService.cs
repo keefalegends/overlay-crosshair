@@ -27,6 +27,7 @@ namespace CrosshairOverlay.Services
                     var config = JsonSerializer.Deserialize<CrosshairConfig>(json, JsonOptions);
                     if (config != null)
                     {
+                        config.Clamp(); // Guard against hand-edited or corrupted JSON values
                         return config;
                     }
                 }

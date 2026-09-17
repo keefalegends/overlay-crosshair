@@ -1,10 +1,12 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Threading;
 using CrosshairOverlay.Models;
 using CrosshairOverlay.Services;
 
@@ -17,6 +19,10 @@ namespace CrosshairOverlay.Views
         private bool _isInitializing = true;
         private IntPtr _hwnd = IntPtr.Zero;
         private HwndSource? _hwndSource;
+
+        // Debounce timer: delays disk write by 600ms after last config change.
+        // Prevents File.WriteAllText() from being called 60x/sec during slider drag.
+        private DispatcherTimer? _saveDebounceTimer;
 
         private const int HOTKEY_TOGGLE_OVERLAY = 9001;
         private const int HOTKEY_TOGGLE_SETTINGS = 9002;
@@ -37,8 +43,26 @@ namespace CrosshairOverlay.Views
             PreviewRenderer.Config = _config;
             _config.PropertyChanged += Config_PropertyChanged;
 
+            // Initialize debounce timer (not started yet — started on first ScheduleSave call)
+            _saveDebounceTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(600)
+            };
+            _saveDebounceTimer.Tick += (_, _) =>
+            {
+                _saveDebounceTimer.Stop();
+                ConfigService.Save(_config);
+            };
+
             LoadConfigToUI();
             _isInitializing = false;
+        }
+
+        private void ScheduleSave()
+        {
+            // Reset the 600ms countdown on every config change
+            _saveDebounceTimer?.Stop();
+            _saveDebounceTimer?.Start();
         }
 
         private void LoadConfigToUI()
@@ -82,7 +106,8 @@ namespace CrosshairOverlay.Views
                     }
                 });
             }
-            ConfigService.Save(_config);
+            // Debounced: coalesces rapid slider changes into a single disk write
+            ScheduleSave();
         }
 
         private void UpdateStatusUI()
@@ -118,13 +143,35 @@ namespace CrosshairOverlay.Views
         {
             if (_hwnd == IntPtr.Zero) return;
 
-            // F10: Toggle Overlay
-            Win32Helper.RegisterHotKey(_hwnd, HOTKEY_TOGGLE_OVERLAY, Win32Helper.MOD_NOREPEAT, VK_F10);
-            // F9: Toggle Settings Window
-            Win32Helper.RegisterHotKey(_hwnd, HOTKEY_TOGGLE_SETTINGS, Win32Helper.MOD_NOREPEAT, VK_F9);
-            // Page Up / Down: Cycle Styles
-            Win32Helper.RegisterHotKey(_hwnd, HOTKEY_STYLE_NEXT, Win32Helper.MOD_NOREPEAT, VK_PRIOR);
-            Win32Helper.RegisterHotKey(_hwnd, HOTKEY_STYLE_PREV, Win32Helper.MOD_NOREPEAT, VK_NEXT);
+            bool f10Ok  = Win32Helper.RegisterHotKey(_hwnd, HOTKEY_TOGGLE_OVERLAY,  Win32Helper.MOD_NOREPEAT, VK_F10);
+            bool f9Ok   = Win32Helper.RegisterHotKey(_hwnd, HOTKEY_TOGGLE_SETTINGS, Win32Helper.MOD_NOREPEAT, VK_F9);
+            bool pgUpOk = Win32Helper.RegisterHotKey(_hwnd, HOTKEY_STYLE_NEXT,      Win32Helper.MOD_NOREPEAT, VK_PRIOR);
+            bool pgDnOk = Win32Helper.RegisterHotKey(_hwnd, HOTKEY_STYLE_PREV,      Win32Helper.MOD_NOREPEAT, VK_NEXT);
+
+            // Notify user if a key couldn't be registered — common cause: OBS, Nvidia, MSI Afterburner
+            // stealing F9/F10. Use BeginInvoke so the warning doesn't block app startup.
+            if (!f10Ok || !f9Ok || !pgUpOk || !pgDnOk)
+            {
+                var failed = string.Join(", ", new[]
+                {
+                    !f10Ok  ? "F10 (Toggle Overlay)" : null,
+                    !f9Ok   ? "F9 (Toggle Settings)" : null,
+                    !pgUpOk ? "Page Up (Next Style)" : null,
+                    !pgDnOk ? "Page Down (Prev Style)" : null,
+                }.Where(s => s != null));
+
+                Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBox.Show(
+                        $"Warning: The following hotkey(s) could not be registered:\n\n  {failed}\n\n" +
+                        "Another application is already using them (e.g. OBS, Nvidia Overlay, MSI Afterburner).\n\n" +
+                        "Affected hotkeys won't work in-game. Use the Settings panel buttons instead.",
+                        "Hotkey Conflict Detected",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning
+                    );
+                }, System.Windows.Threading.DispatcherPriority.Background);
+            }
         }
 
         private void UnregisterGlobalHotkeys()
@@ -193,16 +240,18 @@ namespace CrosshairOverlay.Views
 
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (_isInitializing) return;
+            if (_isInitializing || sender is not Slider s) return;
 
-            _config.Size = SliderSize.Value;
-            _config.Thickness = SliderThickness.Value;
-            _config.Gap = SliderGap.Value;
-            _config.DotSize = SliderDotSize.Value;
-            _config.Opacity = SliderOpacity.Value / 100.0;
-            _config.OutlineThickness = SliderOutlineThickness.Value;
-            _config.OffsetX = (int)SliderOffsetX.Value;
-            _config.OffsetY = (int)SliderOffsetY.Value;
+            // Only update the specific property that changed — avoids firing 7 PropertyChanged
+            // events (and 7 potential disk writes) every time a single slider moves.
+            if      (s == SliderSize)            _config.Size = s.Value;
+            else if (s == SliderThickness)       _config.Thickness = s.Value;
+            else if (s == SliderGap)             _config.Gap = s.Value;
+            else if (s == SliderDotSize)         _config.DotSize = s.Value;
+            else if (s == SliderOpacity)         _config.Opacity = s.Value / 100.0;
+            else if (s == SliderOutlineThickness) _config.OutlineThickness = s.Value;
+            else if (s == SliderOffsetX)         _config.OffsetX = (int)s.Value;
+            else if (s == SliderOffsetY)         _config.OffsetY = (int)s.Value;
         }
 
         private void CmbStyle_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -510,8 +559,16 @@ namespace CrosshairOverlay.Views
 
         protected override void OnClosed(EventArgs e)
         {
+            // Stop debounce timer and do final save immediately on close
+            if (_saveDebounceTimer != null)
+            {
+                _saveDebounceTimer.Stop();
+                _saveDebounceTimer = null;
+            }
             UnregisterGlobalHotkeys();
             _hwndSource?.RemoveHook(HwndHook);
+            _hwndSource?.Dispose();  // Release unmanaged Win32 handle
+            _hwndSource = null;
             _config.PropertyChanged -= Config_PropertyChanged;
             ConfigService.Save(_config);
             base.OnClosed(e);
